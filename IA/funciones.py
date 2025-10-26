@@ -45,3 +45,37 @@ def calcular_heuristica(alpha: float, beta: float, gamma: float, delta: float,
     w = REPORTES_NORM.get(colonia, 0)
 
     return alpha * x + beta * y + gamma * z + delta * w
+
+# ============================================================================
+# FUNCIÓN DE UTILIDAD (OBJETIVO A MAXIMIZAR)
+# ============================================================================
+
+def calcular_coeficiente_gini(valores: List[float]) -> float:
+    """
+    Calcula el coeficiente de Gini para medir desigualdad.
+
+    Gini = 0: Distribución perfectamente equitativa
+    Gini = 1: Desigualdad máxima
+
+    En este contexto, medimos qué tan equitativa es la distribución
+    de prioridades resultante de la heurística.
+
+    Args:
+        valores: Lista de valores a evaluar
+
+    Returns:
+        Coeficiente de Gini (0-1)
+    """
+    if len(valores) == 0:
+        return 0
+
+    valores = sorted(valores)
+    n = len(valores)
+    suma_total = sum(valores)
+
+    if suma_total == 0:
+        return 0
+
+    # Fórmula de Gini: (2 * suma_ponderada) / (n * suma_total) - (n+1)/n
+    suma_ponderada = sum((i + 1) * v for i, v in enumerate(valores))
+    return (2 * suma_ponderada) / (n * suma_total) - (n + 1) / n
