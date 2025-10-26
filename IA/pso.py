@@ -106,4 +106,61 @@ class ParticleSwarmOptimizer:
         global_best_fitness = personal_best_fitness[global_best_idx]
         global_best_result = calcular_utilidad(*global_best_position)
 
-        return None
+        # PASO 4: Bucle principal de optimización
+        for iteration in range(self.n_iterations):
+            for i in range(self.n_particles):
+                # Generar componentes aleatorios
+                r1, r2 = np.random.rand(), np.random.rand()
+
+                # Actualizar velocidad
+                # v_new = w*v + c1*r1*(pbest - x) + c2*r2*(gbest - x)
+                cognitive = self.c1 * r1 * (personal_best_positions[i] - positions[i])
+                social = self.c2 * r2 * (global_best_position - positions[i])
+                velocities[i] = self.w * velocities[i] + cognitive + social
+
+                # Actualizar posición
+                positions[i] = positions[i] + velocities[i]
+
+                # Asegurar restricciones: pesos positivos y suma = 1
+                positions[i] = np.abs(positions[i])
+                positions[i] = positions[i] / positions[i].sum()
+
+                # Evaluar nueva posición
+                resultado = calcular_utilidad(*positions[i])
+                fitness[i] = resultado['utilidad_total']
+
+                # Actualizar mejor personal si se encontró mejor solución
+                if fitness[i] > personal_best_fitness[i]:
+                    personal_best_fitness[i] = fitness[i]
+                    personal_best_positions[i] = positions[i].copy()
+
+                    # Actualizar mejor global si es necesario
+                    if fitness[i] > global_best_fitness:
+                        global_best_fitness = fitness[i]
+                        global_best_position = positions[i].copy()
+                        global_best_result = resultado
+
+            # Guardar estado actual en historial
+            self.history.append({
+                'iteration': iteration,
+                'best_fitness': global_best_fitness,
+                'mean_fitness': np.mean(fitness),
+                'std_fitness': np.std(fitness),
+                'alpha': global_best_position[0],
+                'beta': global_best_position[1],
+                'gamma': global_best_position[2],
+                'delta': global_best_position[3]
+            })
+
+            # Mostrar progreso cada 30 iteraciones
+            if verbose and (iteration % 30 == 0 or iteration == self.n_iterations - 1):
+                print(f"Iter {iteration:3d} | "
+                      f"Mejor={global_best_fitness:6.2f} | "
+                      f"Media={np.mean(fitness):6.2f} | "
+                      f"Desv={np.std(fitness):5.2f}")
+
+        if verbose:
+            print(f"\nOptimización completada en {self.n_iterations} iteraciones")
+            print("="*70)
+
+        return global_best_position, global_best_result, self.history
