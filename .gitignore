@@ -1,0 +1,104 @@
+# =========================================
+# === ENTORNOS VIRTUALES Y DEPENDENCIAS ===
+# =========================================
+venv/
+env/
+.venv/
+_pycache_/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# =========================================
+# === ARCHIVOS DE CONFIGURACIÓN LOCAL ===
+# =========================================
+*.env
+.env.*
+!env.example       # Mantén una plantilla si la usas
+
+# =========================================
+# === COMPILADOS Y TEMPORALES DE PYTHON ===
+# =========================================
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.spec
+
+# =========================================
+# === FASTAPI & PYTHON TOOLS ===
+# =========================================
+# Archivos generados por Uvicorn/Starlette
+*.db
+*.sqlite3
+
+# =========================================
+# === FRONTEND (REACT / VITE) ===
+# =========================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.eslintcache
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+frontend/.env.test.local
+
+# =========================================
+# === EDITORES Y SISTEMA ===
+# =========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================
+# === ARCHIVOS DE SISTEMA WINDOWS / MAC ===
+# =========================================
+ehthumbs.db
+Icon?
+*.swp
+*.swo
+
+# =========================================
+# === BACKUPS Y TEMPORALES ===
+# =========================================
+*.bak
+*.tmp
+*.old
+*.orig
+
+# =========================================
+# === GIT / CONTROL DE VERSIONES ===
+# =========================================
+.gitignore
+.gitkeep
+*.lock
+
+# =========================================
+# === OTROS (IMÁGENES, REPORTES, ETC.) ===
+# =========================================
+# PDF y documentos grandes (solo sube los finales en /docs si es necesario)
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+
+# Carpeta de resultados o datasets (si los generas)
+data/
+outputs/
+results/
+datasets/
+
+# =========================================
+# === COMPATIBILIDAD CON OS ===
+# =========================================
+# Archivos creados por Windows o MacOS
+*.lnk
+.Spotlight-V100
+.Trashes
