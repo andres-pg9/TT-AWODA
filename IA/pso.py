@@ -54,3 +54,56 @@ class ParticleSwarmOptimizer:
         if seed is not None:
             np.random.seed(seed)
 
+    def optimize(self, verbose: bool = True) -> Tuple[np.ndarray, Dict, List]:
+        """
+        Ejecuta el algoritmo PSO para encontrar pesos óptimos.
+
+        Proceso:
+        1. Inicializar enjambre con pesos aleatorios (suma = 1)
+        2. Evaluar fitness de cada partícula
+        3. Para cada iteración:
+           - Actualizar velocidad basada en mejor personal y global
+           - Actualizar posición
+           - Evaluar nuevas posiciones
+           - Actualizar mejores soluciones
+        4. Retornar mejor solución encontrada
+
+        Args:
+            verbose: Si True, muestra progreso
+
+        Returns:
+            Tupla con:
+            - Mejor posición encontrada (pesos α,β,γ,δ)
+            - Resultado de utilidad de esa posición
+            - Historial de optimización por iteración
+        """
+
+        if verbose:
+            print("\nIniciando optimización PSO...")
+            print(f"Partículas: {self.n_particles} | Iteraciones: {self.n_iterations}")
+            print(f"Parámetros: w={self.w}, c1={self.c1}, c2={self.c2}")
+            print("="*70)
+
+        # PASO 1: Inicialización del enjambre
+        # Usar distribución de Dirichlet para asegurar que suma = 1
+        # Cada posición es un vector de 4 pesos que suman 1
+        positions = np.random.dirichlet(np.ones(4), self.n_particles)
+        velocities = np.random.randn(self.n_particles, 4) * 0.1
+
+        # PASO 2: Evaluar fitness inicial
+        fitness = np.array([
+            calcular_utilidad(*pos)['utilidad_total'] for pos in positions
+        ])
+
+        # PASO 3: Inicializar mejores posiciones
+        # Mejor personal (pbest): mejor posición que ha visitado cada partícula
+        personal_best_positions = positions.copy()
+        personal_best_fitness = fitness.copy()
+
+        # Mejor global (gbest): mejor posición encontrada por todo el enjambre
+        global_best_idx = np.argmax(personal_best_fitness)
+        global_best_position = personal_best_positions[global_best_idx].copy()
+        global_best_fitness = personal_best_fitness[global_best_idx]
+        global_best_result = calcular_utilidad(*global_best_position)
+
+        return None
