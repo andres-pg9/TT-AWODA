@@ -1,3 +1,6 @@
+from pso import ParticleSwarmOptimizer
+from resultados import imprimir_resultados_detallados
+
 # ============================================================================
 # EJECUCIÓN PRINCIPAL
 # ============================================================================
@@ -14,10 +17,19 @@ if __name__ == "__main__":
     print("="*80 + "\n")
 
     # Ejecutar PSO
-    
-    
+    pso = ParticleSwarmOptimizer(
+        n_particles=30,
+        n_iterations=150,
+        w=0.7,
+        c1=1.5,
+        c2=1.5,
+        seed=None
+    )
+
+    pesos_optimos, resultado, historial = pso.optimize(verbose=True)
+
     # Mostrar resultados
-    
+    imprimir_resultados_detallados(pesos_optimos, resultado)
 
     print("\n" + "="*80)
     print("OPTIMIZACIÓN COMPLETADA")
