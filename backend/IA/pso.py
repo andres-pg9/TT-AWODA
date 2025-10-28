@@ -54,11 +54,7 @@ class ParticleSwarmOptimizer:
         if seed is not None:
             np.random.seed(seed)
 
-    def optimize(self, consumo=None, reportes=None, verbose=True):
-        if consumo is not None:
-            self.CONSUMO = consumo
-        if reportes is not None:
-            self.REPORTES = reportes
+    def optimize(self, verbose: bool = True) -> Tuple[np.ndarray, Dict, List]:
         """
         Ejecuta el algoritmo PSO para encontrar pesos óptimos.
 

@@ -107,19 +107,3 @@ def imprimir_resultados_detallados(pesos: np.ndarray, resultado: Dict):
 
     print("\n\nTABLA DETALLADA - EDIFICACIONES")
     print(df_edificaciones.to_string(index=False, float_format=lambda x: f'{x:.4f}'))
-
-def imprimir_resultados_detallados(pesos_optimos, resultado, modo_json=False):
-    # ... tu código existente que imprime todo ...
-
-    if modo_json:
-        return {
-            "utilidad_total": resultado.get("utilidad_total", 0),
-            "pesos_optimos": {
-                "α": round(pesos_optimos[0], 4),
-                "β": round(pesos_optimos[1], 4),
-                "γ": round(pesos_optimos[2], 4),
-                "δ": round(pesos_optimos[3], 4)
-            },
-            "colonias": resultado.get("colonias", []),
-            "edificaciones": resultado.get("edificaciones", [])
-        }
