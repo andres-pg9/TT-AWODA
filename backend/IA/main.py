@@ -1,5 +1,5 @@
-from pso import ParticleSwarmOptimizer
-from resultados import imprimir_resultados_detallados
+from .pso import ParticleSwarmOptimizer
+from .resultados import imprimir_resultados_detallados
 
 # ============================================================================
 # EJECUCIÓN PRINCIPAL

@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Dict, List
-from normalizacion import (
+from .normalizacion import (
     COLONIAS, EDIFICACIONES, SOCIAL_NORM, LEGAL_NORM, 
     CONSUMO_NORM, REPORTES_NORM
 )
@@ -10,7 +10,9 @@ from normalizacion import (
 # ============================================================================
 
 def calcular_heuristica(alpha: float, beta: float, gamma: float, delta: float,
-                        edificacion: str, colonia: str) -> float:
+                        edificacion: str, colonia: str,
+                        consumo_norm: Dict[str, float] = None,
+                        reportes_norm: Dict[str, float] = None) -> float:
     """
     Calcula el valor heurístico para una combinación edificación-colonia.
 
@@ -35,14 +37,22 @@ def calcular_heuristica(alpha: float, beta: float, gamma: float, delta: float,
         delta: Peso reportes (0-1)
         edificacion: Tipo de edificación
         colonia: Nombre de la colonia
+        consumo_norm: Diccionario opcional con valores de consumo normalizados
+        reportes_norm: Diccionario opcional con valores de reportes normalizados
 
     Returns:
         Valor heurístico (0-1), mayor valor = mayor prioridad
     """
+    # Usar valores recibidos o valores por defecto
+    if consumo_norm is None:
+        consumo_norm = CONSUMO_NORM
+    if reportes_norm is None:
+        reportes_norm = REPORTES_NORM
+    
     x = SOCIAL_NORM.get(edificacion, 0)
     y = LEGAL_NORM.get(edificacion, 0)
-    z = CONSUMO_NORM.get(colonia, 0)
-    w = REPORTES_NORM.get(colonia, 0)
+    z = consumo_norm.get(colonia, 0)
+    w = reportes_norm.get(colonia, 0)
 
     return alpha * x + beta * y + gamma * z + delta * w
 
@@ -81,7 +91,9 @@ def calcular_coeficiente_gini(valores: List[float]) -> float:
     return (2 * suma_ponderada) / (n * suma_total) - (n + 1) / n
 
 
-def calcular_utilidad(alpha: float, beta: float, gamma: float, delta: float) -> Dict:
+def calcular_utilidad(alpha: float, beta: float, gamma: float, delta: float,
+                     consumo_norm: Dict[str, float] = None,
+                     reportes_norm: Dict[str, float] = None) -> Dict:
     """
     Calcula la utilidad multiobjetivo de una configuración de pesos.
 
@@ -96,10 +108,18 @@ def calcular_utilidad(alpha: float, beta: float, gamma: float, delta: float) -> 
 
     Args:
         alpha, beta, gamma, delta: Pesos de la heurística
+        consumo_norm: Diccionario opcional con valores de consumo normalizados
+        reportes_norm: Diccionario opcional con valores de reportes normalizados
 
     Returns:
         Diccionario con utilidad total y sus componentes (escala 0-100)
     """
+    # Usar valores recibidos o valores por defecto
+    if consumo_norm is None:
+        consumo_norm = CONSUMO_NORM
+    if reportes_norm is None:
+        reportes_norm = REPORTES_NORM
+    
     # Calcular heurística para todas las combinaciones colonia-edificación
     valores_heuristica = []
     ponderacion_social = []
@@ -110,14 +130,15 @@ def calcular_utilidad(alpha: float, beta: float, gamma: float, delta: float) -> 
     for colonia in COLONIAS:
         for edificacion in EDIFICACIONES:
             # Valor heurístico
-            h = calcular_heuristica(alpha, beta, gamma, delta, edificacion, colonia)
+            h = calcular_heuristica(alpha, beta, gamma, delta, edificacion, colonia,
+                                   consumo_norm, reportes_norm)
             valores_heuristica.append(h)
 
             # Componentes individuales ponderados
             ponderacion_social.append(h * SOCIAL_NORM[edificacion])
             ponderacion_legal.append(h * LEGAL_NORM[edificacion])
-            ponderacion_consumo.append(h * CONSUMO_NORM[colonia])
-            ponderacion_reportes.append(h * REPORTES_NORM[colonia])
+            ponderacion_consumo.append(h * consumo_norm[colonia])
+            ponderacion_reportes.append(h * reportes_norm[colonia])
 
     # COMPONENTE 1: EQUIDAD (25%)
     # Medida mediante coeficiente de Gini invertido

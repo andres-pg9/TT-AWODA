@@ -1,6 +1,7 @@
 import numpy as np
 from typing import List, Dict, Tuple
-from funciones import calcular_utilidad
+from .funciones import calcular_utilidad
+from .normalizacion import normalizar_valores
 
 # ============================================================================
 # CLASE PARTICLE SWARM OPTIMIZER
@@ -54,21 +55,24 @@ class ParticleSwarmOptimizer:
         if seed is not None:
             np.random.seed(seed)
 
-    def optimize(self, verbose: bool = True) -> Tuple[np.ndarray, Dict, List]:
+    def optimize(self, consumo, reportes, verbose=False):
         """
         Ejecuta el algoritmo PSO para encontrar pesos óptimos.
 
         Proceso:
-        1. Inicializar enjambre con pesos aleatorios (suma = 1)
-        2. Evaluar fitness de cada partícula
-        3. Para cada iteración:
+        1. Normalizar los datos de entrada (consumo y reportes)
+        2. Inicializar enjambre con pesos aleatorios (suma = 1)
+        3. Evaluar fitness de cada partícula usando los datos normalizados
+        4. Para cada iteración:
            - Actualizar velocidad basada en mejor personal y global
            - Actualizar posición
            - Evaluar nuevas posiciones
            - Actualizar mejores soluciones
-        4. Retornar mejor solución encontrada
+        5. Retornar mejor solución encontrada
 
         Args:
+            consumo: Diccionario con valores de consumo por colonia
+            reportes: Diccionario con valores de reportes por colonia
             verbose: Si True, muestra progreso
 
         Returns:
@@ -77,8 +81,15 @@ class ParticleSwarmOptimizer:
             - Resultado de utilidad de esa posición
             - Historial de optimización por iteración
         """
-
+        
+        # ✅ PASO 0: Normalizar los datos de entrada
+        consumo_norm = normalizar_valores(consumo, piso=0.3)
+        reportes_norm = normalizar_valores(reportes, piso=0.3)
+        
         if verbose:
+            print("\n🔧 Datos normalizados recibidos:")
+            print(f"Consumo normalizado: {consumo_norm}")
+            print(f"Reportes normalizados: {reportes_norm}")
             print("\nIniciando optimización PSO...")
             print(f"Partículas: {self.n_particles} | Iteraciones: {self.n_iterations}")
             print(f"Parámetros: w={self.w}, c1={self.c1}, c2={self.c2}")
@@ -90,9 +101,10 @@ class ParticleSwarmOptimizer:
         positions = np.random.dirichlet(np.ones(4), self.n_particles)
         velocities = np.random.randn(self.n_particles, 4) * 0.1
 
-        # PASO 2: Evaluar fitness inicial
+        # PASO 2: Evaluar fitness inicial usando los datos normalizados
         fitness = np.array([
-            calcular_utilidad(*pos)['utilidad_total'] for pos in positions
+            calcular_utilidad(*pos, consumo_norm=consumo_norm, reportes_norm=reportes_norm)['utilidad_total'] 
+            for pos in positions
         ])
 
         # PASO 3: Inicializar mejores posiciones
@@ -104,7 +116,9 @@ class ParticleSwarmOptimizer:
         global_best_idx = np.argmax(personal_best_fitness)
         global_best_position = personal_best_positions[global_best_idx].copy()
         global_best_fitness = personal_best_fitness[global_best_idx]
-        global_best_result = calcular_utilidad(*global_best_position)
+        global_best_result = calcular_utilidad(*global_best_position, 
+                                               consumo_norm=consumo_norm, 
+                                               reportes_norm=reportes_norm)
 
         # PASO 4: Bucle principal de optimización
         for iteration in range(self.n_iterations):
@@ -125,8 +139,10 @@ class ParticleSwarmOptimizer:
                 positions[i] = np.abs(positions[i])
                 positions[i] = positions[i] / positions[i].sum()
 
-                # Evaluar nueva posición
-                resultado = calcular_utilidad(*positions[i])
+                # Evaluar nueva posición usando los datos normalizados
+                resultado = calcular_utilidad(*positions[i], 
+                                             consumo_norm=consumo_norm, 
+                                             reportes_norm=reportes_norm)
                 fitness[i] = resultado['utilidad_total']
 
                 # Actualizar mejor personal si se encontró mejor solución

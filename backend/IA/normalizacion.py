@@ -51,39 +51,6 @@ LEGAL = {
     'Dependencias de Gobierno': 1
 }
 
-CONSUMO = {
-    'Capultitlán': 6,
-    'Villa GAM': 5,
-    'Residencial Zacatenco': 2,
-    'Tepeyac Insurgentes': 1,
-    'Lindavista I': 3,
-    'Magdalena de las Salinas': 7,
-    'Lindavista II': 4,
-}
-
-REPORTES = {
-    'Capultitlán': 1,
-    'Villa GAM': 2,
-    'Residencial Zacatenco': 7,
-    'Tepeyac Insurgentes': 4,
-    'Lindavista I': 5,
-    'Magdalena de las Salinas': 3,
-    'Lindavista II': 6,
-}
-
-"""
-# Prioridades según marco legal (escala 1-3, donde 3 es más importante)
-# Basado en Ley de Aguas Nacionales y normativas de CDMX
-LEGAL = {
-    'Hospital': 3,
-    'Casas': 3,
-    'Clínicas Particulares': 3,
-    'Comercios': 2,
-    'Centros Comerciales': 2,
-    'Escuelas': 1,
-    'Dependencias de Gobierno': 1
-}
-
 # Consumo histórico promedio por colonia (en litros)
 # Fuente: Datos abiertos CDMX
 CONSUMO = {
@@ -95,7 +62,18 @@ CONSUMO = {
     'Magdalena de las Salinas': 440823.13,
     'Lindavista II': 523630.27
 }
-"""
+
+# Cantidad de reportes de fallas por colonia (número de reportes)
+# Fuente: Datos abiertos CDMX
+REPORTES = {
+    'Capultitlán': 33,
+    'Villa GAM': 79,
+    'Residencial Zacatenco': 195,
+    'Tepeyac Insurgentes': 319,
+    'Lindavista I': 405,
+    'Magdalena de las Salinas': 128,
+    'Lindavista II': 265,
+}
 
 # ============================================================================
 # FUNCIONES DE NORMALIZACIÓN
