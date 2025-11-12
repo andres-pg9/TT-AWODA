@@ -7,6 +7,35 @@ import traceback
 
 router = APIRouter()
 
+def validar_y_obtener_datos(consumo_input: dict, reportes_input: dict) -> tuple:
+    """
+    Valida los datos de entrada y retorna los datos a usar (input o default).
+    
+    Si todos los valores de consumo o reportes son 0, usa los valores por defecto.
+    
+    Args:
+        consumo_input: Diccionario de consumo desde el frontend
+        reportes_input: Diccionario de reportes desde el frontend
+        
+    Returns:
+        tuple: (consumo_a_usar, reportes_a_usar, usando_defaults)
+    """
+    # Verificar si todos los valores de consumo son 0
+    consumo_todos_cero = all(v == 0 for v in consumo_input.values())
+    
+    # Verificar si todos los valores de reportes son 0
+    reportes_todos_cero = all(v == 0 for v in reportes_input.values())
+    
+    # Decidir qué datos usar
+    consumo_a_usar = CONSUMO if consumo_todos_cero else consumo_input
+    reportes_a_usar = REPORTES if reportes_todos_cero else reportes_input
+    
+    # Determinar si se están usando defaults
+    usando_defaults = consumo_todos_cero or reportes_todos_cero
+    
+    return consumo_a_usar, reportes_a_usar, usando_defaults
+
+
 @router.get("/")
 def obtener_rankings():
     """
@@ -66,32 +95,44 @@ def ejecutar_optimizacion(datos: DatosEntrada):
     POST /api/optimize
     
     Ejecuta el algoritmo PSO con los datos enviados desde el frontend.
+    Si todos los valores de consumo o reportes son 0, usa los valores por defecto.
     Retorna la respuesta completa: utilidad_total, pesos_optimos, colonias y edificaciones.
     """
     try:
-        # 1️⃣ Crear el optimizador PSO con los parámetros base
+        # 1️⃣ Validar datos de entrada y decidir si usar defaults
+        consumo_a_usar, reportes_a_usar, usando_defaults = validar_y_obtener_datos(
+            datos.consumo,
+            datos.reportes
+        )
+        
+        # Log para debug (opcional)
+        if usando_defaults:
+            print("⚠️ Usando valores por defecto porque se detectaron datos en 0")
+            print(f"   - Consumo: {'DEFAULT' if all(v == 0 for v in datos.consumo.values()) else 'CUSTOM'}")
+            print(f"   - Reportes: {'DEFAULT' if all(v == 0 for v in datos.reportes.values()) else 'CUSTOM'}")
+        
+        # 2️⃣ Crear el optimizador PSO con los parámetros base
         pso = ParticleSwarmOptimizer(
             n_particles=30,
             n_iterations=150,
             w=0.7,
             c1=1.5,
             c2=1.5,
-            seed=None
+            seed=42 if usando_defaults else None  # Semilla fija si usa defaults
         )
 
-        # 2️⃣ Ejecutar optimización pasando consumo y reportes dinámicos
-        # El método optimize() internamente normaliza estos valores
+        # 3️⃣ Ejecutar optimización con los datos validados
         pesos_optimos, resultado, _ = pso.optimize(
-            consumo=datos.consumo,
-            reportes=datos.reportes,
+            consumo=consumo_a_usar,
+            reportes=reportes_a_usar,
             verbose=False
         )
 
-        # 3️⃣ Normalizar los mismos valores para pasarlos a resultados
-        consumo_norm = normalizar_valores(datos.consumo, piso=0.3)
-        reportes_norm = normalizar_valores(datos.reportes, piso=0.3)
+        # 4️⃣ Normalizar los valores usados para pasarlos a resultados
+        consumo_norm = normalizar_valores(consumo_a_usar, piso=0.3)
+        reportes_norm = normalizar_valores(reportes_a_usar, piso=0.3)
 
-        # 4️⃣ Procesar resultados en formato JSON, pasando los valores normalizados
+        # 5️⃣ Procesar resultados en formato JSON
         salida = imprimir_resultados_detallados(
             pesos_optimos, 
             resultado, 
