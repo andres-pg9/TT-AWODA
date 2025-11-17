@@ -1,0 +1,144 @@
+/* ========================================
+   ESTILOS DEL DASHBOARD
+   ======================================== */
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ========================================
+   NAVBAR
+   ======================================== */
+.awoda-navbar {
+  background: linear-gradient(90deg, #1a2332 0%, #2d3e50 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  height: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  flex-shrink: 0;
+}
+
+.awoda-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.awoda-icon {
+  height: 36px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.awoda-title {
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.awoda-navbar-menu {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  justify-content: center;
+}
+
+.awoda-nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.awoda-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.awoda-nav-link.active {
+  color: #ffffff;
+  background-color: rgba(25, 118, 210, 0.3);
+  border-bottom: 2px solid #1976d2;
+}
+
+/* Botón de cerrar sesión en navbar */
+.awoda-navbar-logout {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.awoda-navbar-logout:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.awoda-footer {
+  background-color: #1a2332;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 15px;
+  font-size: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: none; /* Oculto por defecto para maximizar espacio del mapa */
+}
+
+.awoda-footer p {
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .awoda-navbar {
+    padding: 0 15px;
+    height: 50px;
+  }
+
+  .awoda-navbar-brand {
+    font-size: 16px;
+  }
+
+  .awoda-icon {
+    height: 28px;
+  }
+
+  .awoda-navbar-menu {
+    display: none; /* Ocultar menú en móvil */
+  }
+
+  .awoda-navbar-logout {
+    padding: 6px 16px;
+    font-size: 12px;
+  }
+}
+
+
