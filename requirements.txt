@@ -1,22 +1,86 @@
-annotated-doc==0.0.3
-annotated-types==0.7.0
-anyio==4.11.0
-click==8.3.0
-colorama==0.4.6
-fastapi==0.120.0
-h11==0.16.0
-idna==3.11
-numpy==2.3.4
-pandas==2.3.3
-pydantic==2.12.3
-pydantic_core==2.41.4
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.1
-pytz==2025.2
-six==1.17.0
-sniffio==1.3.1
-starlette==0.48.0
-typing-inspection==0.4.2
-typing_extensions==4.15.0
-tzdata==2025.2
-uvicorn==0.38.0
+# ============================================================================
+# AWODA - Sistema de Optimización de Distribución de Agua
+# Requirements del Backend
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# FRAMEWORK WEB
+# ----------------------------------------------------------------------------
+fastapi==0.120.0              # Framework web async para crear la API REST
+uvicorn[standard]==0.38.0     # Servidor ASGI para correr FastAPI
+starlette==0.48.0             # Framework base de FastAPI (instalado con FastAPI)
+
+# ----------------------------------------------------------------------------
+# VALIDACIÓN Y SCHEMAS
+# ----------------------------------------------------------------------------
+pydantic==2.12.3              # Validación de datos y schemas de la API
+pydantic_core==2.41.4         # Core de Pydantic (instalado con Pydantic)
+annotated-types==0.7.0        # Tipos anotados para Pydantic
+typing_extensions==4.15.0    # Extensiones de typing para Python
+typing-inspection==0.4.2     # Inspección de tipos en runtime
+
+# ----------------------------------------------------------------------------
+# BASE DE DATOS - MONGODB
+# ----------------------------------------------------------------------------
+motor==3.3.2                  # Driver async de MongoDB para FastAPI
+pymongo==4.6.1                # Driver de MongoDB (requerido por motor)
+
+# ----------------------------------------------------------------------------
+# AUTENTICACIÓN Y SEGURIDAD
+# ----------------------------------------------------------------------------
+python-jose[cryptography]==3.3.0  # JWT tokens para autenticación
+bcrypt==4.1.2                     # Hashing de passwords
+passlib[bcrypt]==1.7.4            # Librería de hashing (usa bcrypt)
+
+# ----------------------------------------------------------------------------
+# COMPUTACIÓN CIENTÍFICA (Algoritmo PSO)
+# ----------------------------------------------------------------------------
+numpy==2.3.4                  # Arrays y operaciones matemáticas para PSO
+pandas==2.3.3                 # Manipulación de datos y resultados
+
+# ----------------------------------------------------------------------------
+# UTILIDADES
+# ----------------------------------------------------------------------------
+python-dotenv==1.2.1          # Variables de entorno desde archivo .env
+python-dateutil==2.9.0.post0  # Manejo avanzado de fechas
+pytz==2025.2                  # Zonas horarias
+tzdata==2025.2                # Datos de zonas horarias
+
+# ----------------------------------------------------------------------------
+# DEPENDENCIAS INTERNAS (instaladas automáticamente)
+# ----------------------------------------------------------------------------
+annotated-doc==0.0.3          # Documentación de tipos anotados
+anyio==4.11.0                 # Biblioteca async (usada por FastAPI)
+click==8.3.0                  # CLI utilities (usado por uvicorn)
+colorama==0.4.6               # Colores en terminal (usado por uvicorn)
+h11==0.16.0                   # Protocolo HTTP/1.1 (usado por uvicorn)
+idna==3.11                    # Internacionalización de dominios
+six==1.17.0                   # Compatibilidad Python 2/3
+sniffio==1.3.1                # Detección de librería async
+
+# ============================================================================
+# INSTRUCCIONES DE INSTALACIÓN
+# ============================================================================
+#
+# 1. Crear entorno virtual:
+#    python -m venv venv
+#
+# 2. Activar entorno virtual:
+#    Windows: venv\Scripts\activate
+#    Mac/Linux: source venv/bin/activate
+#
+# 3. Instalar dependencias:
+#    pip install -r requirements.txt
+#
+# 4. Configurar MongoDB:
+#    - Instalar MongoDB localmente O usar MongoDB Atlas
+#    - Copiar .env.example a .env
+#    - Configurar MONGODB_URL y JWT_SECRET_KEY en .env
+#
+# 5. Inicializar base de datos:
+#    python init_database.py
+#
+# 6. Ejecutar backend:
+#    uvicorn main:app --reload
+#
+# ============================================================================
