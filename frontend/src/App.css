@@ -1,42 +1,160 @@
+/* ========================================
+   APP.CSS - Estilos para la aplicación principal
+   Sistema AWODA
+   ======================================== */
+
+/* Reset global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background-color: #f5f5f5;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ========================================
+   NAVBAR SUPERIOR (Opcional)
+   ======================================== */
+.awoda-navbar {
+  background: linear-gradient(90deg, #1a2332 0%, #2d3e50 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  height: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+}
+
+.awoda-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.awoda-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.awoda-title {
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.awoda-navbar-menu {
+  display: flex;
+  gap: 30px;
+}
+
+.awoda-nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.awoda-nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.awoda-nav-link.active {
+  color: #ffffff;
+  background-color: rgba(25, 118, 210, 0.3);
+  border-bottom: 2px solid #1976d2;
+}
+
+/* ========================================
+   FOOTER (Opcional)
+   ======================================== */
+.awoda-footer {
+  background-color: #1a2332;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 15px;
+  font-size: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: none; /* Oculto por defecto - el mapa ocupa toda la pantalla */
+}
+
+.awoda-footer p {
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .awoda-navbar {
+    padding: 0 15px;
+    height: 50px;
+  }
+
+  .awoda-navbar-brand {
+    font-size: 16px;
+  }
+
+  .awoda-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .awoda-navbar-menu {
+    display: none; /* Ocultar menú en móvil - implementar hamburger menu */
+  }
+}
+
+/* ========================================
+   MODO SIN NAVBAR (Si quieres usar solo el mapa)
+   ======================================== */
+.App.no-navbar .awoda-navbar {
+  display: none;
+}
+
+.App.no-navbar .awoda-footer {
+  display: none;
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+.text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.mt-2 {
+  margin-top: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.mb-2 {
+  margin-bottom: 1rem;
 }
