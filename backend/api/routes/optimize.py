@@ -312,15 +312,29 @@ async def obtener_resultado_especifico(resultado_id: str):
         if not resultado:
             raise HTTPException(status_code=404, detail="Resultado no encontrado")
         
-        # Retornar resultado completo
+        # Retornar resultado completo con formato consistente
         return {
             "id": resultado["_id"],
             "fecha_calculo": resultado["fecha_calculo"],
             "utilidad_total": resultado["utilidad_total"],
             "pesos_heuristica": resultado["pesos_heuristica"],
             "componentes_utilidad": resultado["componentes_utilidad"],
-            "ranking_colonias": resultado["ranking_colonias"],
-            "ranking_edificaciones": resultado["ranking_edificaciones"],
+            "ranking_colonias": [
+                {
+                    "nombre": col["colonia"],  # Mapear "colonia" a "nombre"
+                    "prioridad": col["prioridad"],
+                    "ranking": col["ranking"]
+                }
+                for col in resultado["ranking_colonias"]
+            ],
+            "ranking_edificaciones": [
+                {
+                    "nombre": edif["tipo"],  # Mapear "tipo" a "nombre"
+                    "prioridad": edif["prioridad"],
+                    "ranking": edif["ranking"]
+                }
+                for edif in resultado["ranking_edificaciones"]
+            ],
             "version_algoritmo": resultado.get("version_algoritmo", "PSO_v1.0")
         }
     
