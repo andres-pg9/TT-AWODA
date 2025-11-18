@@ -27,7 +27,8 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;  /* solo evita scroll horizontal */
+  overflow-y: auto;
 }
 
 /* ========================================
@@ -36,7 +37,8 @@ body {
 .awoda-container {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr 380px;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto; 
   width: 100vw;
   background-color: var(--awoda-light-gray);
 }
@@ -216,8 +218,19 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  height: 100vh;
+  overflow-y: auto;
 }
+
+/* Contenedor interno del sidebar derecho */
+.awoda-sidebar-right-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;   /* ❤️ NECESARIO EN FLEX PARA PERMITIR SCROLL REAL */
+  display: flex;
+  flex-direction: column;
+}
+
 
 .awoda-distribucion-header {
   padding: 25px 25px 20px;
@@ -233,8 +246,8 @@ body {
 
 /* Lista de distribución */
 .awoda-distribucion-lista {
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 0 auto;
+  overflow: visible;
   padding: 15px 25px;
   background-color: #fafafa;
 }
@@ -464,6 +477,9 @@ body {
     margin: 15px 20px;
     padding: 12px 16px;
     font-size: 12px;
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
   }
 }
 

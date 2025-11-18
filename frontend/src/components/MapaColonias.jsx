@@ -4,6 +4,9 @@ import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './MapaColonias.css';
 import L from 'leaflet';
+import ColoniaEdificaciones from "./ColoniaEdificaciones";
+
+
 
 const COLORES_RANKING = {
   1: '#FF0000',
@@ -233,7 +236,9 @@ const MapaColonias = () => {
   const [cargando, setCargando] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const geoJsonLayerRef = useRef(null);
-  const [geoKey, setGeoKey] = useState(0);  // ← NUEVO
+  const [geoKey, setGeoKey] = useState(0);
+  const [boundsIniciales, setBoundsIniciales] = useState(null);
+
 
 
   useEffect(() => {
@@ -246,8 +251,10 @@ const MapaColonias = () => {
       const geoData = await responseGeo.json();
       const bounds = L.geoJSON(geoData).getBounds();
 
+
       setGeoJsonData(geoData);
       setBoundsSeleccionado(bounds);
+      setBoundsIniciales(bounds);
 
       // GET para obtener valores por defecto
       const responsePrioridad = await fetch('http://127.0.0.1:8000/api/optimize/');
@@ -415,18 +422,32 @@ const MapaColonias = () => {
 
         <h3 style={{ marginTop: "10px", padding: "0 20px" }}>Colonias disponibles:</h3>
         <div className="awoda-colonias-lista">
+          <button
+            className={`awoda-colonia-item ${!coloniaSeleccionada ? "active" : ""}`}
+            onClick={() => {
+              setColoniaSeleccionada(null);
+              if (boundsIniciales) setBoundsSeleccionado(boundsIniciales);
+            }}
+          >
+            <span className="awoda-colonia-icono">↻</span>
+            <span className="awoda-colonia-nombre">Vista General</span>
+          </button>
+
+          {/* LISTA DE COLONIAS */}
           {coloniasOrdenadas.map((colonia, index) => (
             <button
               key={index}
               className={`awoda-colonia-item ${coloniaSeleccionada === colonia.colonia ? "active" : ""}`}
               onClick={() => {
                 setColoniaSeleccionada(colonia.colonia);
+
                 const feature = geoJsonData.features.find(
-                  (f) => f.properties.name.toLowerCase() === colonia.colonia.toLowerCase()
+                  f => f.properties.name.toLowerCase() === colonia.colonia.toLowerCase()
                 );
+
                 if (feature && geoJsonLayerRef.current) {
                   const layer = Object.values(geoJsonLayerRef.current._layers).find(
-                    (l) => l.feature?.properties?.name === colonia.colonia
+                    l => l.feature?.properties?.name === colonia.colonia
                   );
                   if (layer) {
                     const bounds = layer.getBounds();
@@ -494,53 +515,78 @@ const MapaColonias = () => {
       </main>
 
       <aside className="awoda-sidebar-right">
-        <div className="awoda-distribucion-header">
-          <h2>Distribución Sugerida</h2>
-        </div>
 
-        <div className="awoda-disclaimer-footer">
-          <p>
-            Esta propuesta de distribución fue generada por la IA de AWODA y está
-            sujeta a validación de autoridades de la SEGIAGUA CDMX.
-          </p>
-        </div>
+        {/* Contenedor que SÍ tendrá scroll */}
+        <div className="awoda-sidebar-right-content">
 
-        <div className="awoda-distribucion-lista">
-          {coloniasOrdenadas.map((colonia, index) => (
-            <div key={index} className="awoda-distribucion-item">
-              <span className="awoda-distribucion-numero">{index + 1}.</span>
-              <span className="awoda-distribucion-nombre">{colonia.colonia}</span>
-            </div>
-          ))}
-        </div>
-
-        {coloniaSeleccionada && obtenerDatosColonia(coloniaSeleccionada) && (
-          <div className="awoda-colonia-detalles">
-            <h3>Detalles de la Colonia</h3>
-            <div className="awoda-detalle-item">
-              <strong>Nombre:</strong> {coloniaSeleccionada}
-            </div>
-            <div className="awoda-detalle-item">
-              <strong>Ranking:</strong> {obtenerDatosColonia(coloniaSeleccionada).ranking}/7
-            </div>
-            <div className="awoda-detalle-item">
-              <strong>Prioridad:</strong> {(obtenerDatosColonia(coloniaSeleccionada).prioridad * 100).toFixed(2)}%
-            </div>
-            <div
-              className="awoda-color-indicator"
-              style={{
-                backgroundColor: COLORES_RANKING[obtenerDatosColonia(coloniaSeleccionada).ranking],
-              }}
-            ></div>
+          <div className="awoda-distribucion-header">
+            <h2>Distribución Sugerida</h2>
           </div>
-        )}
 
-        <button
-          className="awoda-btn-ajustar"
-          onClick={() => setModalAbierto(true)}
-        >
-          AJUSTAR PARÁMETROS
-        </button>
+          <div className="awoda-disclaimer-footer">
+            <p>
+              Esta propuesta de distribución fue generada por la IA de AWODA y está
+              sujeta a validación de autoridades de la SEGIAGUA CDMX.
+            </p>
+          </div>
+
+          {!coloniaSeleccionada && (
+            <div className="awoda-distribucion-lista">
+              {coloniasOrdenadas.map((colonia, index) => (
+                <div key={index} className="awoda-distribucion-item">
+                  <span className="awoda-distribucion-numero">{index + 1}.</span>
+                  <span className="awoda-distribucion-nombre">{colonia.colonia}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {coloniaSeleccionada && (
+            <>
+              <div className="awoda-distribucion-lista">
+                <ColoniaEdificaciones
+                  edificaciones={datosPrioridad.edificaciones}
+                />
+              </div>
+
+              <div className="awoda-colonia-detalles">
+                <h3>Detalles de la Colonia</h3>
+
+                <div className="awoda-detalle-item">
+                  <strong>Nombre:</strong> {coloniaSeleccionada}
+                </div>
+
+                <div className="awoda-detalle-item">
+                  <strong>Ranking:</strong>{" "}
+                  {obtenerDatosColonia(coloniaSeleccionada).ranking}/7
+                </div>
+
+                <div className="awoda-detalle-item">
+                  <strong>Prioridad:</strong>{" "}
+                  {(obtenerDatosColonia(coloniaSeleccionada).prioridad * 100).toFixed(2)}%
+                </div>
+
+                <div
+                  className="awoda-color-indicator"
+                  style={{
+                    backgroundColor:
+                      COLORES_RANKING[
+                        obtenerDatosColonia(coloniaSeleccionada).ranking
+                      ],
+                  }}
+                ></div>
+              </div>
+            </>
+          )}
+
+          {/* Ahora sí scrollea */}
+          <button
+            className="awoda-btn-ajustar"
+            onClick={() => setModalAbierto(true)}
+          >
+            AJUSTAR PARÁMETROS
+          </button>
+        </div>
       </aside>
     </div>
   );
