@@ -173,33 +173,6 @@ const Historial = () => {
 
   return (
     <div className="historial-container">
-      {/* Navbar */}
-      <nav className="awoda-navbar">
-        <div className="awoda-navbar-brand">
-          <img src="/isotipo-awoda.png" alt="AWODA" className="awoda-icon" />
-          <span className="awoda-title">AWODA</span>
-        </div>
-        
-        <div className="awoda-navbar-menu">
-          <button onClick={() => navigate('/dashboard')} className="awoda-nav-link">
-            PRINCIPAL
-          </button>
-          <a href="#graficas" className="awoda-nav-link">GRÁFICAS</a>
-          <span className="awoda-nav-link active">HISTORIAL</span>
-          <a href="#entrenamiento" className="awoda-nav-link">ENTRENAMIENTO</a>
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          {usuario && (
-            <span style={{ color: 'white', fontSize: '14px' }}>
-              👤 {usuario.nombre_empleado}
-            </span>
-          )}
-          <button className="awoda-navbar-logout" onClick={handleLogout}>
-            Cerrar sesión
-          </button>
-        </div>
-      </nav>
 
       {/* Contenido principal */}
       <div className="historial-content">

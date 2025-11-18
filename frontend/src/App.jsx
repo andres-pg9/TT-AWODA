@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Historial from './components/Historial';
+import Graficas from './components/Graficas';
+//import Entrenamiento from './components/Entrenamiento';
 import './App.css';
 
 /**

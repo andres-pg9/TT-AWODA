@@ -15,49 +15,16 @@ async def obtener_historial_colonia(
     GET /api/colonias/{nombre_colonia}/historial?limit=10
     
     Obtiene el historial de consumo y reportes de una colonia específica.
-    
-    Args:
-        nombre_colonia: Nombre de la colonia (ej: "Villa GAM", "Lindavista I")
-        limit: Número de registros históricos a retornar (default: 10, máximo: 50)
-    
-    Returns:
-        {
-            "colonia": "Villa GAM",
-            "total_registros": 15,
-            "limite_aplicado": 10,
-            "datos": [
-                {
-                    "id": "...",
-                    "fecha": "2025-11-17T22:25:53.323Z",
-                    "consumo": 5.0,
-                    "reportes": 6
-                },
-                ...
-            ],
-            "formato_nivo": {
-                "consumo": [
-                    { "x": "2025-11-17", "y": 5.0 },
-                    ...
-                ],
-                "reportes": [
-                    { "x": "2025-11-17", "y": 6 },
-                    ...
-                ]
-            }
-        }
     """
     try:
-        # Validar que el nombre de la colonia no esté vacío
         if not nombre_colonia or nombre_colonia.strip() == "":
             raise HTTPException(status_code=400, detail="El nombre de la colonia no puede estar vacío")
         
-        # Obtener historial de MongoDB ordenado por fecha (más reciente primero)
         historial = await DatosColoniaRepository.get_historial_by_colonia(
             nombre_colonia=nombre_colonia,
             limit=limit
         )
         
-        # Si no se encontraron datos
         if not historial:
             raise HTTPException(
                 status_code=404, 
@@ -75,14 +42,13 @@ async def obtener_historial_colonia(
             })
         
         # Formatear datos específicamente para Nivo Line Chart
-        # Nivo espera formato: [{ x: "fecha", y: valor }, ...]
         datos_nivo_consumo = []
         datos_nivo_reportes = []
         
         # Invertir el orden para que las gráficas muestren los datos de más antiguo a más reciente
         for registro in reversed(historial):
-            # Formatear fecha (solo fecha, sin hora)
-            fecha_str = registro["fecha_consulta"].strftime("%Y-%m-%d")
+            # 🔧 FIX: Formatear fecha con hora y minuto para que cada punto sea único
+            fecha_str = registro["fecha_consulta"].strftime("%Y-%m-%d %H:%M")
             
             datos_nivo_consumo.append({
                 "x": fecha_str,
@@ -122,25 +88,13 @@ async def listar_colonias():
     GET /api/colonias
     
     Obtiene la lista de todas las colonias disponibles en el sistema.
-    
-    Returns:
-        {
-            "total": 7,
-            "colonias": [
-                "Capultitlán",
-                "Villa GAM",
-                "Residencial Zacatenco",
-                ...
-            ]
-        }
     """
     try:
-        # Obtener lista única de colonias desde MongoDB
         colonias = await DatosColoniaRepository.get_lista_colonias()
         
         return {
             "total": len(colonias),
-            "colonias": sorted(colonias)  # Ordenar alfabéticamente
+            "colonias": sorted(colonias)
         }
     
     except Exception as e:

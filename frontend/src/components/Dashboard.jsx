@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MapaColonias from './MapaColonias';
+import Graficas from './Graficas';
+import Historial from './Historial';
 import './Dashboard.css';
 
 /**
  * DASHBOARD - Componente principal después del login
- * Contiene el navbar y el mapa de colonias
- * 🔥 NUEVO: Valida que el usuario tenga token antes de mostrar contenido
+ * Contiene el navbar y las diferentes vistas (Mapa, Gráficas, Historial)
  */
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const [usuario, setUsuario] = useState(null);
     const [cargando, setCargando] = useState(true);
+    const [vistaActual, setVistaActual] = useState('principal');
 
-    // 🔥 CAMBIO 1: Validar token al cargar el componente
+    // Validar token al cargar el componente
     useEffect(() => {
         const validarSesion = async () => {
             const token = localStorage.getItem('token');
             const usuarioGuardado = localStorage.getItem('usuario');
 
-            // Si no hay token, redirigir al login
             if (!token) {
                 console.log('❌ No hay token, redirigiendo a login...');
                 navigate('/login');
                 return;
             }
 
-            // Si hay usuario guardado, usarlo
             if (usuarioGuardado) {
                 try {
                     setUsuario(JSON.parse(usuarioGuardado));
@@ -38,7 +38,6 @@ const Dashboard = () => {
                 }
             }
 
-            // 🔥 OPCIONAL: Validar token con el backend
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/auth/validate-token', {
                     headers: {
@@ -47,7 +46,6 @@ const Dashboard = () => {
                 });
 
                 if (!response.ok) {
-                    // Token inválido o expirado
                     console.log('❌ Token inválido, redirigiendo a login...');
                     localStorage.removeItem('token');
                     localStorage.removeItem('usuario');
@@ -61,7 +59,6 @@ const Dashboard = () => {
 
             } catch (err) {
                 console.error('Error al validar token:', err);
-                // Si hay error de red pero tenemos token, continuar
                 setCargando(false);
             }
         };
@@ -69,12 +66,10 @@ const Dashboard = () => {
         validarSesion();
     }, [navigate]);
 
-    // 🔥 CAMBIO 2: Hacer logout con el backend
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
 
         try {
-            // Llamar al endpoint de logout del backend
             await fetch('http://127.0.0.1:8000/api/auth/logout', {
                 method: 'POST',
                 headers: {
@@ -86,27 +81,29 @@ const Dashboard = () => {
         } catch (err) {
             console.error('Error al hacer logout:', err);
         } finally {
-            // Siempre eliminar token y redirigir
             localStorage.removeItem('token');
             localStorage.removeItem('usuario');
             navigate('/login');
         }
     };
 
-    // 🔥 CAMBIO 3: Mostrar indicador de carga mientras valida
+    const cambiarVista = (vista) => {
+        setVistaActual(vista);
+    };
+
     if (cargando) {
         return (
-            <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 height: '100vh',
                 flexDirection: 'column',
                 gap: '20px'
             }}>
-                <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
+                <div style={{
+                    width: '50px',
+                    height: '50px',
                     border: '5px solid #f3f3f3',
                     borderTop: '5px solid #3498db',
                     borderRadius: '50%',
@@ -126,20 +123,42 @@ const Dashboard = () => {
                     <span className="awoda-title">AWODA</span>
                 </div>
                 <div className="awoda-navbar-menu">
-                    <a href="#principal" className="awoda-nav-link active">PRINCIPAL</a>
-                    <a href="#graficas" className="awoda-nav-link">GRÁFICAS</a>
-                    <button onClick={() => navigate('/historial')} className="awoda-nav-link" style={{cursor: 'pointer'}}>
+                    <button
+                        onClick={() => cambiarVista('principal')}
+                        className={`awoda-nav-link ${vistaActual === 'principal' ? 'active' : ''}`}
+                    >
+                        PRINCIPAL
+                    </button>
+                    <button
+                        onClick={() => cambiarVista('graficas')}
+                        className={`awoda-nav-link ${vistaActual === 'graficas' ? 'active' : ''}`}
+                    >
+                        GRÁFICAS
+                    </button>
+                    <button
+                        onClick={() => cambiarVista('historial')}
+                        className={`awoda-nav-link ${vistaActual === 'historial' ? 'active' : ''}`}
+                    >
                         HISTORIAL
                     </button>
-                    <a href="#entrenamiento" className="awoda-nav-link">ENTRENAMIENTO</a>
+                    <button
+                        onClick={() => cambiarVista('entrenamiento')}
+                        className={`awoda-nav-link ${vistaActual === 'entrenamiento' ? 'active' : ''}`}
+                    >
+                        ENTRENAMIENTO
+                    </button>
                 </div>
-                
-                {/* 🔥 CAMBIO 4: Mostrar nombre del usuario */}
+
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     {usuario && (
-                        <span style={{ color: 'white', fontSize: '14px' }}>
-                            👤 {usuario.nombre_empleado}
+                        <span style={{ color: 'white', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <svg width="16" height="16" fill="white" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6z" />
+                                <path fillRule="evenodd" d="M14 14s-1-4-6-4s-6 4-6 4s2 2 6 2s6-2 6-2z" />
+                            </svg>
+                            {usuario.nombre_empleado}
                         </span>
+
                     )}
                     <button className="awoda-navbar-logout" onClick={handleLogout}>
                         Cerrar sesión
@@ -147,17 +166,27 @@ const Dashboard = () => {
                 </div>
             </nav>
 
-            {/* Componente principal del mapa */}
-            <MapaColonias />
+            {/* Contenido principal según la vista */}
+            {vistaActual === 'principal' && <MapaColonias />}
+            {vistaActual === 'graficas' && <Graficas />}
+            {vistaActual === 'historial' && <Historial />}
+            {vistaActual === 'entrenamiento' && (
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 'calc(100vh - 60px)',
+                    flexDirection: 'column',
+                    gap: '20px',
+                    color: '#666'
+                }}>
+                    <span style={{ fontSize: '64px' }}>🤖</span>
+                    <h2>Entrenamiento</h2>
+                    <p>Esta sección estará disponible próximamente</p>
+                </div>
+            )}
 
-            {/* Footer */}
-            <footer className="awoda-footer">
-                <p>
-                    <a href="/aviso-privacidad">Aviso de privacidad</a> | © 2025 AWODA ESCOM IPN
-                </p>
-            </footer>
-
-            {/* 🔥 Agregar animación de spinner */}
+            {/* Animación de spinner */}
             <style>
                 {`
                     @keyframes spin {
