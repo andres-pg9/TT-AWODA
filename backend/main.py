@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from api.routes import optimize, config
-from database import Database
-from api.routes import optimize, config, auth
+from database.connection import Database
+from api.routes import optimize, config, auth, colonias
 import logging
 
 # Configurar logging
@@ -64,6 +63,7 @@ app.add_middleware(
 app.include_router(optimize.router, prefix="/api/optimize", tags=["Optimización"])
 app.include_router(config.router, prefix="/api/config", tags=["Configuración"])
 app.include_router(auth.router, prefix="/api/auth", tags=["Autenticación"])
+app.include_router(colonias.router, prefix="/api/colonias", tags=["Colonias"])
 
 # ============================================================================
 # ENDPOINT RAÍZ

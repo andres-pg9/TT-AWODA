@@ -271,6 +271,43 @@ class DatosColoniaRepository:
         result = await collection.delete_one({"_id": ObjectId(dato_id)})
         return result.deleted_count > 0
 
+    @staticmethod
+    async def get_historial_by_colonia(nombre_colonia: str, limit: int = 10) -> List[Dict]:
+        """
+        Obtiene el historial de datos de una colonia específica.
+        
+        Args:
+            nombre_colonia: Nombre de la colonia a consultar
+            limit: Número máximo de registros a retornar
+            
+        Returns:
+            Lista de documentos ordenados por fecha_consulta descendente (más reciente primero)
+        """
+        collection = DatosColoniaRepository.get_collection()
+        
+        # Buscar todos los registros de la colonia, ordenados por fecha descendente
+        datos = await collection.find(
+            {"colonia": nombre_colonia}
+        ).sort(
+            "fecha_consulta", -1  # -1 = descendente (más reciente primero)
+        ).limit(limit).to_list(length=limit)
+        
+        return [convert_objectid_to_str(d) for d in datos]
+    
+    @staticmethod
+    async def get_lista_colonias() -> List[str]:
+        """
+        Obtiene la lista única de todas las colonias en la base de datos.
+        
+        Returns:
+            Lista de nombres de colonias (strings únicos)
+        """
+        collection = DatosColoniaRepository.get_collection()
+        
+        # Usar distinct para obtener valores únicos del campo "colonia"
+        colonias = await collection.distinct("colonia")
+        
+        return colonias
 
 # ============================================================================
 # REPOSITORY: Resultados de Optimización
