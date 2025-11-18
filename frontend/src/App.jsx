@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import Historial from './components/Historial';
 import './App.css';
 
 /**
@@ -37,6 +38,16 @@ function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
+      
+      {/* Ruta del historial (protegida) */}
+      <Route 
+        path="/historial" 
+        element={
+          <ProtectedRoute>
+            <Historial />
           </ProtectedRoute>
         } 
       />

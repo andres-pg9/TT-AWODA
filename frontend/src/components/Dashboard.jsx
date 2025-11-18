@@ -128,7 +128,9 @@ const Dashboard = () => {
                 <div className="awoda-navbar-menu">
                     <a href="#principal" className="awoda-nav-link active">PRINCIPAL</a>
                     <a href="#graficas" className="awoda-nav-link">GRÁFICAS</a>
-                    <a href="#historial" className="awoda-nav-link">HISTORIAL</a>
+                    <button onClick={() => navigate('/historial')} className="awoda-nav-link" style={{cursor: 'pointer'}}>
+                        HISTORIAL
+                    </button>
                     <a href="#entrenamiento" className="awoda-nav-link">ENTRENAMIENTO</a>
                 </div>
                 
