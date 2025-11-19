@@ -27,7 +27,7 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow-x: hidden;  /* solo evita scroll horizontal */
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -37,10 +37,10 @@ body {
 .awoda-container {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr 380px;
-  min-height: 100vh;
-  height: auto; 
+  height: calc(100vh - 60px);
   width: 100vw;
   background-color: var(--awoda-light-gray);
+  overflow: hidden;
 }
 
 /* ========================================
@@ -59,6 +59,7 @@ body {
 .awoda-sidebar-header {
   padding: 25px 20px 15px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .awoda-sidebar-header h3 {
@@ -119,6 +120,7 @@ body {
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
 }
 
 .awoda-disclaimer {
@@ -128,7 +130,7 @@ body {
   text-align: justify;
 }
 
-/* Scrollbar personalizada para sidebar */
+/* Scrollbar personalizada para sidebar izquierdo */
 .awoda-colonias-lista::-webkit-scrollbar {
   width: 6px;
 }
@@ -154,6 +156,13 @@ body {
   flex-direction: column;
   background-color: var(--awoda-light-gray);
   position: relative;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+}
+
+.awoda-main::-webkit-scrollbar {
+  display: none; /* Chrome, Safari y Opera */
 }
 
 .awoda-map-header {
@@ -218,23 +227,23 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  height: 100vh;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
-/* Contenedor interno del sidebar derecho */
+/* 🔥 IMPORTANTE: Contenedor interno con scroll funcional */
 .awoda-sidebar-right-content {
   flex: 1;
   overflow-y: auto;
-  min-height: 0;   /* ❤️ NECESARIO EN FLEX PARA PERMITIR SCROLL REAL */
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  min-height: 0; /* ❤️ CRÍTICO PARA QUE FUNCIONE EL SCROLL EN FLEX */
 }
-
 
 .awoda-distribucion-header {
   padding: 25px 25px 20px;
   border-bottom: 2px solid var(--awoda-gray);
+  flex-shrink: 0;
 }
 
 .awoda-distribucion-header h2 {
@@ -246,8 +255,7 @@ body {
 
 /* Lista de distribución */
 .awoda-distribucion-lista {
-  flex: 0 0 auto;
-  overflow: visible;
+  flex-shrink: 0;
   padding: 15px 25px;
   background-color: #fafafa;
 }
@@ -284,6 +292,7 @@ body {
   background-color: #f0f4f8;
   border-top: 2px solid var(--awoda-gray);
   animation: slideDown 0.3s ease;
+  flex-shrink: 0;
 }
 
 @keyframes slideDown {
@@ -330,6 +339,7 @@ body {
   padding: 20px 25px;
   background-color: #fff9e6;
   border-top: 1px solid #ffe0b2;
+  flex-shrink: 0;
 }
 
 .awoda-disclaimer-footer p {
@@ -339,7 +349,7 @@ body {
   text-align: justify;
 }
 
-/* Botón ajustar parámetros */
+/* Botón ajustar parámetros - Dentro del contenedor scrolleable */
 .awoda-btn-ajustar {
   margin: 20px 25px;
   padding: 14px 20px;
@@ -354,6 +364,7 @@ body {
   transition: all 0.3s ease;
   text-transform: uppercase;
   box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+  flex-shrink: 0;
 }
 
 .awoda-btn-ajustar:hover {
@@ -366,22 +377,22 @@ body {
   transform: translateY(0);
 }
 
-/* Scrollbar para lista de distribución */
-.awoda-distribucion-lista::-webkit-scrollbar {
-  width: 6px;
+/* Scrollbar personalizada para sidebar derecho - VISIBLE */
+.awoda-sidebar-right-content::-webkit-scrollbar {
+  width: 8px;
 }
 
-.awoda-distribucion-lista::-webkit-scrollbar-track {
-  background: #f5f5f5;
+.awoda-sidebar-right-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.awoda-distribucion-lista::-webkit-scrollbar-thumb {
-  background: #bdbdbd;
-  border-radius: 3px;
+.awoda-sidebar-right-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
 }
 
-.awoda-distribucion-lista::-webkit-scrollbar-thumb:hover {
-  background: #9e9e9e;
+.awoda-sidebar-right-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* ========================================
@@ -425,165 +436,8 @@ body {
 }
 
 /* ========================================
-   RESPONSIVE - Tablets
+   MODAL
    ======================================== */
-@media (max-width: 1200px) {
-  .awoda-container {
-    grid-template-columns: 240px 1fr 320px;
-  }
-  
-  :root {
-    --sidebar-width: 240px;
-  }
-}
-
-/* ========================================
-   RESPONSIVE - Móviles
-   ======================================== */
-@media (max-width: 768px) {
-  .awoda-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
-  }
-
-  .awoda-sidebar {
-    max-height: 30vh;
-    border-bottom: 2px solid var(--awoda-gray);
-  }
-
-  .awoda-sidebar-footer {
-    display: none;
-  }
-
-  .awoda-main {
-    order: 2;
-  }
-
-  .awoda-sidebar-right {
-    order: 3;
-    max-height: 35vh;
-    border-top: 2px solid var(--awoda-gray);
-  }
-
-  .awoda-map-header h2 {
-    font-size: 18px;
-  }
-
-  .awoda-distribucion-header h2 {
-    font-size: 16px;
-  }
-
-  .awoda-btn-ajustar {
-    margin: 15px 20px;
-    padding: 12px 16px;
-    font-size: 12px;
-    position: sticky;
-    bottom: 0;
-    z-index: 1000;
-  }
-}
-
-/* ========================================
-   MEJORAS DE ACCESIBILIDAD
-   ======================================== */
-button:focus,
-.awoda-colonia-item:focus {
-  outline: 3px solid var(--awoda-accent-blue);
-  outline-offset: 2px;
-}
-
-/* Reducir movimiento para usuarios con preferencias */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ========================================
-   ESTADOS DE HOVER PARA POLÍGONOS
-   ======================================== */
-.leaflet-interactive:hover {
-  cursor: pointer;
-}
-
-/* ========================================
-   UTILIDADES
-   ======================================== */
-.awoda-hidden {
-  display: none !important;
-}
-
-.awoda-visible {
-  display: block !important;
-}
-
-/* ========================================
-   IMPRESIÓN
-   ======================================== */
-@media print {
-  .awoda-sidebar,
-  .awoda-sidebar-right {
-    display: none;
-  }
-
-  .awoda-container {
-    grid-template-columns: 1fr;
-  }
-
-  .awoda-map-header {
-    page-break-after: avoid;
-  }
-}
-
-.info.legend {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 8px 10px;
-  border-radius: 6px;
-  line-height: 18px;
-  color: #333;
-  font-size: 12px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-}
-
-.info.legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-  opacity: 0.9;
-}
-
-.mensaje-informativo {
-  background-color: #f0f4ff;
-  border-left: 4px solid #2a6df4;
-  padding: 12px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  color: #333;
-  border-radius: 6px;
-  line-height: 1.4;
-}
-
-.btn-cerrar-sesion {
-  margin-top: auto;
-  width: 100%;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-cerrar-sesion:hover {
-  background-color: #c0392b;
-}
-
-/* Estilos del modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -595,6 +449,7 @@ button:focus,
   justify-content: center;
   align-items: center;
   z-index: 10000;
+  padding: 20px;
 }
 
 .modal-container {
@@ -761,4 +616,369 @@ button:focus,
 
 .modal-btn-save:hover:not(:disabled) {
   background-color: #1565c0;
+}
+
+/* ========================================
+   LEYENDA Y EXTRAS
+   ======================================== */
+.info.legend {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 10px;
+  border-radius: 6px;
+  line-height: 18px;
+  color: #333;
+  font-size: 12px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.info.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.9;
+}
+
+/* ========================================
+   BOTÓN HAMBURGUESA (solo visible en móvil)
+   ======================================== */
+.awoda-hamburger-btn {
+  display: none; /* Oculto por defecto en desktop */
+  position: fixed;
+  top: 70px; /* Debajo del navbar */
+  left: 15px;
+  z-index: 10001;
+  background: linear-gradient(180deg, var(--awoda-dark-blue) 0%, var(--awoda-medium-blue) 100%);
+  border: none;
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.awoda-hamburger-btn span {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.awoda-hamburger-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.awoda-hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+/* Overlay oscuro cuando el menú está abierto */
+.awoda-menu-overlay {
+  display: none; /* Oculto por defecto en desktop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========================================
+   RESPONSIVE - Tablets
+   ======================================== */
+@media (max-width: 1200px) {
+  .awoda-container {
+    grid-template-columns: 240px 1fr 320px;
+  }
+  
+  :root {
+    --sidebar-width: 240px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE - Móviles
+   ======================================== */
+@media (max-width: 768px) {
+  /* Mostrar botón hamburguesa */
+  .awoda-hamburger-btn {
+    display: flex;
+  }
+
+  /* Mostrar overlay cuando el menú está abierto */
+  .awoda-menu-overlay {
+    display: block;
+  }
+
+  .awoda-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar izquierdo - Oculto por defecto, se desliza desde la izquierda */
+  .awoda-sidebar {
+    position: fixed;
+    top: 60px; /* Debajo del navbar */
+    left: -100%; /* Oculto fuera de pantalla */
+    width: 80%;
+    max-width: 320px;
+    height: calc(100vh - 60px);
+    max-height: none;
+    border-bottom: none;
+    border-right: 2px solid var(--awoda-gray);
+    z-index: 10000;
+    transition: left 0.3s ease;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Sidebar abierto */
+  .awoda-sidebar.menu-abierto {
+    left: 0;
+  }
+
+  .awoda-sidebar-header {
+    padding: 15px;
+  }
+
+  .awoda-sidebar-header h3 {
+    font-size: 14px;
+  }
+
+  .awoda-disclaimer {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .awoda-colonias-lista {
+    max-height: none;
+    flex: 1;
+    padding: 10px 0;
+  }
+
+  .awoda-colonia-item {
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    font-size: 13px;
+  }
+
+  .awoda-sidebar-footer {
+    display: block;
+    padding: 15px;
+  }
+
+  /* Mapa - Ahora ocupa más espacio */
+  .awoda-main {
+    order: 1;
+    height: 50vh;
+    flex-shrink: 0;
+    padding: 10px;
+  }
+
+  .awoda-map-header {
+    padding: 10px 15px;
+  }
+
+  .awoda-map-header h2 {
+    font-size: 16px;
+  }
+
+  /* Sidebar derecho - Resto del espacio */
+  .awoda-sidebar-right {
+    order: 2;
+    width: 100%;
+    flex: 1;
+    height: auto;
+    max-height: none;
+    border-top: 2px solid var(--awoda-gray);
+  }
+
+  .awoda-distribucion-header {
+    padding: 15px 20px 12px;
+  }
+
+  .awoda-distribucion-header h2 {
+    font-size: 16px;
+  }
+
+  .awoda-disclaimer-footer {
+    padding: 10px 15px;
+  }
+
+  .awoda-disclaimer-footer p {
+    font-size: 10px;
+  }
+
+  .awoda-distribucion-lista {
+    padding: 12px 20px;
+  }
+
+  .awoda-distribucion-item {
+    padding: 10px 0;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .awoda-colonia-detalles {
+    padding: 15px 20px;
+    margin: 0 15px 15px;
+  }
+
+  .awoda-btn-ajustar {
+    margin: 15px 20px 20px;
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+
+  .awoda-distribucion-header h2 {
+    font-size: 16px;
+  }
+
+  .awoda-btn-ajustar {
+    margin: 15px 20px;
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+
+  .modal-container {
+    max-width: 95%;
+  }
+
+  .modal-table {
+    font-size: 12px;
+  }
+
+  .modal-table th,
+  .modal-table td {
+    padding: 8px;
+  }
+}
+
+/* Mobile portrait (max-width: 480px) */
+@media (max-width: 480px) {
+  .awoda-sidebar-header {
+    padding: 15px;
+  }
+
+  .awoda-disclaimer {
+    font-size: 10px;
+  }
+
+  .awoda-colonia-item {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .awoda-distribucion-header {
+    padding: 20px 15px 12px;
+  }
+
+  .awoda-distribucion-header h2 {
+    font-size: 16px;
+  }
+
+  .awoda-disclaimer-footer {
+    padding: 12px 15px;
+  }
+
+  .awoda-disclaimer-footer p {
+    font-size: 10px;
+  }
+
+  .awoda-distribucion-lista,
+  .awoda-colonia-detalles {
+    padding: 15px;
+  }
+
+  .awoda-btn-ajustar {
+    margin: 15px;
+    padding: 12px 18px;
+    font-size: 12px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: 15px;
+  }
+
+  .modal-table {
+    font-size: 11px;
+  }
+
+  .modal-input {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   MEJORAS DE ACCESIBILIDAD
+   ======================================== */
+button:focus,
+.awoda-colonia-item:focus {
+  outline: 3px solid var(--awoda-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Reducir movimiento para usuarios con preferencias */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   ESTADOS DE HOVER PARA POLÍGONOS
+   ======================================== */
+.leaflet-interactive:hover {
+  cursor: pointer;
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+.awoda-hidden {
+  display: none !important;
+}
+
+.awoda-visible {
+  display: block !important;
+}
+
+/* ========================================
+   IMPRESIÓN
+   ======================================== */
+@media print {
+  .awoda-sidebar,
+  .awoda-sidebar-right {
+    display: none;
+  }
+
+  .awoda-container {
+    grid-template-columns: 1fr;
+  }
+
+  .awoda-map-header {
+    page-break-after: avoid;
+  }
 }

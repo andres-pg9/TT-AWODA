@@ -1,12 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './MapaColonias.css';
 import L from 'leaflet';
 import ColoniaEdificaciones from "./ColoniaEdificaciones";
-
-
 
 const COLORES_RANKING = {
   1: '#FF0000',
@@ -107,7 +104,7 @@ const ModalParametros = ({ isOpen, onClose, colonias, onGuardar }) => {
       const reportesInicial = {};
 
       colonias.forEach((colonia) => {
-        consumoInicial[colonia.colonia] = 0;  // ← "colonia"
+        consumoInicial[colonia.colonia] = 0;
         reportesInicial[colonia.colonia] = 0;
       });
 
@@ -137,7 +134,6 @@ const ModalParametros = ({ isOpen, onClose, colonias, onGuardar }) => {
       }
     }));
   };
-
 
   const handleGuardar = async () => {
     setCargando(true);
@@ -238,8 +234,7 @@ const MapaColonias = () => {
   const geoJsonLayerRef = useRef(null);
   const [geoKey, setGeoKey] = useState(0);
   const [boundsIniciales, setBoundsIniciales] = useState(null);
-
-
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false); // 🆕 Estado para menú móvil
 
   useEffect(() => {
     cargarDatos();
@@ -251,14 +246,13 @@ const MapaColonias = () => {
       const geoData = await responseGeo.json();
       const bounds = L.geoJSON(geoData).getBounds();
 
-
       setGeoJsonData(geoData);
       setBoundsSeleccionado(bounds);
       setBoundsIniciales(bounds);
-
-      // GET para obtener valores por defecto
+      // GET para obtener los datos del backend
       const responsePrioridad = await fetch('http://127.0.0.1:8000/api/optimize/');
       const prioridadData = await responsePrioridad.json();
+
       prioridadData.colonias = prioridadData.colonias.map(c => ({
         colonia: c.colonia ?? c.nombre,
         prioridad: c.prioridad,
@@ -277,7 +271,7 @@ const MapaColonias = () => {
   const guardarParametros = async (parametros) => {
     try {
       setCargando(true);
-      const token = localStorage.getItem('token'); // Asegúrate de que el token esté almacenado en localStorage
+      const token = localStorage.getItem('token');
       const response = await fetch('http://127.0.0.1:8000/api/optimize/', {
         method: 'POST',
         headers: {
@@ -293,7 +287,7 @@ const MapaColonias = () => {
 
       const prioridadData = await response.json();
       prioridadData.colonias = prioridadData.colonias.map(c => ({
-        colonia: c.colonia ?? c.nombre,     // ← AQUÍ ESTABA EL BUG
+        colonia: c.colonia ?? c.nombre,
         prioridad: c.prioridad,
         ranking: Number(c.ranking)
       }));
@@ -312,7 +306,7 @@ const MapaColonias = () => {
   const obtenerRankingColonia = (nombreColonia) => {
     if (!datosPrioridad || !datosPrioridad.colonias) return null;
     const colonia = datosPrioridad.colonias.find(
-      c => c?.colonia?.toLowerCase() === nombreColonia?.toLowerCase()  // ← "colonia"
+      c => c?.colonia?.toLowerCase() === nombreColonia?.toLowerCase()
     );
     return colonia ? colonia.ranking : null;
   };
@@ -320,7 +314,7 @@ const MapaColonias = () => {
   const obtenerDatosColonia = (nombreColonia) => {
     if (!datosPrioridad || !datosPrioridad.colonias) return null;
     return datosPrioridad.colonias.find(
-      c => c?.colonia?.toLowerCase() === nombreColonia?.toLowerCase()  // ← "colonia"
+      c => c?.colonia?.toLowerCase() === nombreColonia?.toLowerCase()
     );
   };
 
@@ -410,7 +404,27 @@ const MapaColonias = () => {
         onGuardar={guardarParametros}
       />
 
-      <aside className="awoda-sidebar">
+      {/* 🆕 Botón hamburguesa (solo visible en móvil) */}
+      <button 
+        className="awoda-hamburger-btn"
+        onClick={() => setMenuMovilAbierto(!menuMovilAbierto)}
+        aria-label="Abrir menú de colonias"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* 🆕 Overlay para cerrar menú al tocar fuera */}
+      {menuMovilAbierto && (
+        <div 
+          className="awoda-menu-overlay" 
+          onClick={() => setMenuMovilAbierto(false)}
+        ></div>
+      )}
+
+      {/* Sidebar izquierdo con clase condicional */}
+      <aside className={`awoda-sidebar ${menuMovilAbierto ? 'menu-abierto' : ''}`}>
         <div className="awoda-sidebar-header">
           <p className="awoda-disclaimer">
             La priorización de suministro está delimitada a un conjunto
@@ -427,13 +441,13 @@ const MapaColonias = () => {
             onClick={() => {
               setColoniaSeleccionada(null);
               if (boundsIniciales) setBoundsSeleccionado(boundsIniciales);
+              setMenuMovilAbierto(false); // 🆕 Cerrar menú al seleccionar
             }}
           >
             <span className="awoda-colonia-icono">↻</span>
             <span className="awoda-colonia-nombre">Vista General</span>
           </button>
 
-          {/* LISTA DE COLONIAS */}
           {coloniasOrdenadas.map((colonia, index) => (
             <button
               key={index}
@@ -454,6 +468,7 @@ const MapaColonias = () => {
                     setBoundsSeleccionado(bounds);
                   }
                 }
+                setMenuMovilAbierto(false); // 🆕 Cerrar menú al seleccionar
               }}
             >
               <span className="awoda-colonia-icono">→</span>
@@ -462,7 +477,6 @@ const MapaColonias = () => {
           ))}
         </div>
 
-        {/* Footer del sidebar */}
         <div className="awoda-sidebar-footer">
           <p className="awoda-disclaimer">
             Sistema desarrollado conforme a la Ley de Aguas Nacionales
@@ -515,10 +529,7 @@ const MapaColonias = () => {
       </main>
 
       <aside className="awoda-sidebar-right">
-
-        {/* Contenedor que SÍ tendrá scroll */}
         <div className="awoda-sidebar-right-content">
-
           <div className="awoda-distribucion-header">
             <h2>Distribución Sugerida</h2>
           </div>
@@ -579,7 +590,6 @@ const MapaColonias = () => {
             </>
           )}
 
-          {/* Ahora sí scrollea */}
           <button
             className="awoda-btn-ajustar"
             onClick={() => setModalAbierto(true)}
