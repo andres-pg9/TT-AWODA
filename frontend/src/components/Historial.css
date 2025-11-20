@@ -105,12 +105,12 @@
 .historial-content {
   flex: 1;
   overflow-y: auto;
-  padding: 30px;
+  padding: 20px 30px;
 }
 
 .historial-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
 }
 
 .historial-header h1 {
@@ -210,6 +210,8 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  max-width: 1700px;
+  margin: 0 auto;
 }
 
 .historial-table {
@@ -534,4 +536,43 @@
     font-size: 11px;
     padding: 6px 10px;
   }
+}
+
+/* ========================================
+   BOTÓN DE EXPORTACIÓN A PDF
+   ======================================== */
+.historial-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-exportar-pdf {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-exportar-pdf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, #2980b9, #21618c);
+}
+
+.btn-exportar-pdf:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

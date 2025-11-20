@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './Historial.css';
 
 /**
@@ -134,6 +136,164 @@ const Historial = () => {
     return `${(Number(numero) * 100).toFixed(0)}%`;
   };
 
+  const exportarAPDF = async () => {
+    try {
+      const doc = new jsPDF();
+      
+      // Título
+      doc.setFontSize(18);
+      doc.setTextColor(26, 35, 50);
+      doc.text('AWODA - Historial de Optimización', 14, 20);
+      
+      // Información de exportación
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      const fechaExportacion = new Date().toLocaleString('es-MX', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      doc.text(`Fecha de exportación: ${fechaExportacion}`, 14, 28);
+      if (usuario) {
+        doc.text(`Generado por: ${usuario.nombre_empleado}`, 14, 34);
+      }
+      
+      // Obtener últimos 10 resultados con sus rankings
+      const ultimos10 = historial.slice(0, 10);
+      const token = localStorage.getItem('token');
+      let yPos = 40;
+      
+      for (let i = 0; i < ultimos10.length; i++) {
+        const resultado = ultimos10[i];
+        
+        // Nueva página para cada resultado (excepto el primero)
+        if (i > 0) {
+          doc.addPage();
+          yPos = 20;
+        }
+        
+        // Encabezado del resultado
+        doc.setFontSize(14);
+        doc.setTextColor(26, 35, 50);
+        doc.text(`Resultado ${i + 1}`, 14, yPos);
+        yPos += 5;
+        
+        // Información del resultado (Fecha, Utilidad, Pesos)
+        const infoData = [
+          ['Fecha de Cálculo', formatearFecha(resultado.fecha_calculo)],
+          ['Utilidad Total', formatearNumero(resultado.utilidad_total)],
+          ['Peso Social', formatearPorcentaje(resultado.pesos_heuristica?.beta_social)],
+          ['Peso Legal', formatearPorcentaje(resultado.pesos_heuristica?.alfa_legal)],
+          ['Peso Consumo', formatearPorcentaje(resultado.pesos_heuristica?.gamma_consumo)],
+          ['Peso Reportes', formatearPorcentaje(resultado.pesos_heuristica?.delta_reportes)]
+        ];
+        
+        autoTable(doc, {
+          startY: yPos,
+          body: infoData,
+          theme: 'plain',
+          styles: { 
+            fontSize: 10, 
+            cellPadding: 2,
+            lineColor: [200, 200, 200],
+            lineWidth: 0.1
+          },
+          columnStyles: {
+            0: { cellWidth: 50, fontStyle: 'bold', textColor: [52, 73, 94] },
+            1: { cellWidth: 130 }
+          }
+        });
+        
+        yPos = doc.lastAutoTable.finalY + 10;
+        
+        // Cargar detalles del resultado
+        const response = await fetch(`http://localhost:8000/api/optimize/${resultado.id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) continue;
+        
+        const detalle = await response.json();
+        
+        // Ranking de Colonias
+        if (detalle.ranking_colonias && detalle.ranking_colonias.length > 0) {
+          doc.setFontSize(12);
+          doc.setTextColor(52, 73, 94);
+          doc.text('Orden de prioridad en Colonias', 14, yPos);
+          yPos += 6;
+          
+          const coloniasData = detalle.ranking_colonias.slice(0, 10).map((col, idx) => [
+            idx + 1,
+            col.nombre || 'N/A'
+          ]);
+          
+          autoTable(doc, {
+            startY: yPos,
+            head: [['#', 'Colonia']],
+            body: coloniasData,
+            theme: 'striped',
+            headStyles: { fillColor: [52, 73, 94], fontSize: 10 },
+            styles: { fontSize: 9, cellPadding: 3 },
+            columnStyles: {
+              0: { cellWidth: 15, halign: 'center' },
+              1: { cellWidth: 165 }
+            }
+          });
+          
+          yPos = doc.lastAutoTable.finalY + 10;
+        }
+        
+        // Ranking de Edificaciones
+        if (detalle.ranking_edificaciones && detalle.ranking_edificaciones.length > 0) {
+          // Verificar si hay espacio suficiente, si no, nueva página
+          if (yPos > 220) {
+            doc.addPage();
+            yPos = 20;
+          }
+          
+          doc.setFontSize(12);
+          doc.setTextColor(52, 73, 94);
+          doc.text('Orden de prioridad en Edificaciones', 14, yPos);
+          yPos += 6;
+          
+          const edificacionesData = detalle.ranking_edificaciones.slice(0, 10).map((edif, idx) => [
+            idx + 1,
+            edif.nombre || 'N/A'
+          ]);
+          
+          autoTable(doc, {
+            startY: yPos,
+            head: [['#', 'Edificación']],
+            body: edificacionesData,
+            theme: 'striped',
+            headStyles: { fillColor: [52, 73, 94], fontSize: 10 },
+            styles: { fontSize: 9, cellPadding: 3 },
+            columnStyles: {
+              0: { cellWidth: 15, halign: 'center' },
+              1: { cellWidth: 165 }
+            }
+          });
+        }
+      }
+      
+      // Guardar PDF con fecha local (CDMX, UTC-6)
+      const fechaLocal = new Date();
+      fechaLocal.setHours(fechaLocal.getHours() - 6);
+      const fechaFormato = fechaLocal.toISOString().split('T')[0];
+      doc.save(`AWODA_Historial_${fechaFormato}.pdf`);
+      
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('Error al generar el PDF. Por favor intenta de nuevo.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="historial-container">
@@ -178,7 +338,7 @@ const Historial = () => {
       <div className="historial-content">
         <div className="historial-header">
           <h1>Historial de Sugerencias de Optimización</h1>
-          <p>Consulta las distribuciones de agua calculadas previamente</p>
+          <p>Consulta las distribuciones de agua previas</p>
         </div>
 
         {error && (
@@ -198,8 +358,14 @@ const Historial = () => {
         )}
 
         {!error && historial.length > 0 && (
-          <div className="historial-table-container">
-            <table className="historial-table">
+          <>
+            <div className="historial-actions">
+              <button className="btn-exportar-pdf" onClick={exportarAPDF}>
+                📄 Exportar a PDF
+              </button>
+            </div>
+            <div className="historial-table-container">
+              <table className="historial-table">
               <thead>
                 <tr>
                   <th>Fecha de Cálculo</th>
@@ -329,6 +495,7 @@ const Historial = () => {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
     </div>
