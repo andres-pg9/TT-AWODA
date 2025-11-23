@@ -167,6 +167,7 @@ awoda/
 │   ├── api/
 │   │   └── routes/
 │   │       ├── auth.py           # Autenticación
+│   │       ├── colonias.py       # API de consumo de colonias para Graficas con Nivo
 │   │       ├── config.py         # Configuración
 │   │       └── optimize.py       # Optimización PSO
 │   ├── core/
@@ -191,8 +192,14 @@ awoda/
 └── frontend/
     ├── public/
     ├── src/
-    │   ├── components/           # Componentes React
-    │   ├── pages/                # Páginas
+    │   ├── components/                       # Componentes React
+    │   │   ├── ColoniaEdificaciones.jsx      # Componente para mostrar edificaciones por colonia
+    │   │   ├── Dashboard.jsx                 # Pagina principal del dashboard, contiene todos los componentes
+    │   │   ├── Graficas.jsx                  # Componente para graficas con Nivo
+    │   │   ├── Historial.jsx                 # Componente para mostrar el historial de optimizaciones
+    │   │   ├── Login.jsx                     # Componente para autenticación e inicio de sesión
+    │   │   ├── MapaColonias.jsx              # Componente para mostrar el mapa de colonias       
+    │   │   └── ProtectedRoute.jsx            # Componente para rutas protegidas                     
     │   ├── App.jsx               # Componente principal
     │   └── main.jsx              # Punto de entrada
     ├── index.html
