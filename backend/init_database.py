@@ -10,7 +10,10 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 from passlib.context import CryptContext
+from dotenv import load_dotenv 
 import os
+
+load_dotenv()                  
 
 # Configuración
 MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
