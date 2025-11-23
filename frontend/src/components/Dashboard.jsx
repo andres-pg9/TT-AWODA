@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MapaColonias from './MapaColonias';
 import Graficas from './Graficas';
 import Historial from './Historial';
+import AdminPanel from './AdminPanel';
 import './Dashboard.css';
 
 /**
@@ -147,6 +148,14 @@ const Dashboard = () => {
                     >
                         ENTRENAMIENTO
                     </button>
+                    {usuario && usuario.rol_usuario === 'administrador' && (
+                        <button
+                            onClick={() => cambiarVista('admin')}
+                            className={`awoda-nav-link ${vistaActual === 'admin' ? 'active' : ''}`}
+                        >
+                            USUARIOS
+                        </button>
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -170,6 +179,7 @@ const Dashboard = () => {
             {vistaActual === 'principal' && <MapaColonias />}
             {vistaActual === 'graficas' && <Graficas />}
             {vistaActual === 'historial' && <Historial />}
+            {vistaActual === 'admin' && <AdminPanel />}
             {vistaActual === 'entrenamiento' && (
                 <div style={{
                     display: 'flex',

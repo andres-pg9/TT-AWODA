@@ -1,0 +1,377 @@
+.admin-panel-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-panel-header h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-volver {
+    padding: 0.75rem 1.5rem;
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-volver:hover {
+    background-color: #7f8c8d;
+}
+
+.mensaje-exito,
+.mensaje-error {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.mensaje-exito {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.mensaje-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.admin-panel-acciones {
+    margin-bottom: 2rem;
+}
+
+.btn-nuevo-usuario {
+    padding: 0.75rem 1.5rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-nuevo-usuario:hover {
+    background-color: #2980b9;
+}
+
+/* Formulario de usuario */
+.formulario-usuario {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-usuario h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.form-acciones {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-guardar {
+    padding: 0.75rem 1.5rem;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-guardar:hover {
+    background-color: #229954;
+}
+
+.btn-cancelar {
+    padding: 0.75rem 1.5rem;
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-cancelar:hover {
+    background-color: #7f8c8d;
+}
+
+/* Tabla de usuarios */
+.tabla-usuarios {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-usuarios h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.tabla-usuarios table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-usuarios thead {
+    background-color: #34495e;
+    color: white;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tabla-usuarios th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+    color: white;
+}
+
+.tabla-usuarios td {
+    color: #2c3e50;
+}
+
+.tabla-usuarios tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.tabla-usuarios tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badges de rol */
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.badge-administrador {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.badge-trabajador {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Botones de accion en tabla */
+.btn-eliminar {
+    padding: 0.5rem 1rem;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s;
+}
+
+.btn-eliminar:hover {
+    background-color: #c0392b;
+}
+
+.btn-editar {
+    padding: 0.5rem 1rem;
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+    transition: background-color 0.3s;
+}
+
+.btn-editar:hover {
+    background-color: #e67e22;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-panel-container {
+        padding: 1rem;
+    }
+
+    .admin-panel-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .admin-panel-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .formulario-usuario {
+        padding: 1rem;
+    }
+
+    .form-acciones {
+        flex-direction: column;
+    }
+
+    .tabla-usuarios {
+        overflow-x: auto;
+    }
+
+    .tabla-usuarios table {
+        min-width: 600px;
+    }
+}
+
+/* Modal de confirmacion de eliminacion */
+.modal-overlay-eliminar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-container-eliminar {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header-eliminar {
+    padding: 20px 30px;
+    background: #e74c3c;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-header-eliminar h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.modal-body-eliminar {
+    padding: 30px;
+}
+
+.modal-body-eliminar p {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: #2c3e50;
+    line-height: 1.5;
+}
+
+.modal-advertencia {
+    font-size: 0.875rem;
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+.modal-footer-eliminar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 30px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn-modal-cancelar {
+    padding: 0.75rem 1.5rem;
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-modal-cancelar:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-modal-eliminar {
+    padding: 0.75rem 1.5rem;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-modal-eliminar:hover {
+    background-color: #c0392b;
+}
