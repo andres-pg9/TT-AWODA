@@ -4,6 +4,7 @@ import MapaColonias from './MapaColonias';
 import Graficas from './Graficas';
 import Historial from './Historial';
 import AdminPanel from './AdminPanel';
+import Entrenamiento from './Entrenamiento';
 import './Dashboard.css';
 
 /**
@@ -180,21 +181,7 @@ const Dashboard = () => {
             {vistaActual === 'graficas' && <Graficas />}
             {vistaActual === 'historial' && <Historial />}
             {vistaActual === 'admin' && <AdminPanel />}
-            {vistaActual === 'entrenamiento' && (
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: 'calc(100vh - 60px)',
-                    flexDirection: 'column',
-                    gap: '20px',
-                    color: '#666'
-                }}>
-                    <span style={{ fontSize: '64px' }}>🤖</span>
-                    <h2>Entrenamiento</h2>
-                    <p>Esta sección estará disponible próximamente</p>
-                </div>
-            )}
+            {vistaActual === 'entrenamiento' && <Entrenamiento />}
 
             {/* Animación de spinner */}
             <style>
