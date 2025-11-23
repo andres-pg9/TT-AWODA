@@ -9,6 +9,7 @@
 fastapi==0.120.0              # Framework web async para crear la API REST
 uvicorn[standard]==0.38.0     # Servidor ASGI para correr FastAPI
 starlette==0.48.0             # Framework base de FastAPI (instalado con FastAPI)
+gunicorn==23.0.0              # Servidor WSGI para producción
 
 # ----------------------------------------------------------------------------
 # VALIDACIÓN Y SCHEMAS
