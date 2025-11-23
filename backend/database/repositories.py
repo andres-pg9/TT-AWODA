@@ -144,6 +144,19 @@ class UsuarioRepository:
         collection = UsuarioRepository.get_collection()
         result = await collection.delete_one({"numero_empleado": numero_empleado})
         return result.deleted_count > 0
+    
+    @staticmethod
+    async def contar_administradores() -> int:
+        """
+        Cuenta cuantos usuarios administradores existen.
+        Esto para validar que siempre exista al menos uno.
+        
+        Returns:
+            Numero de administradores en el sistema
+        """
+        collection = UsuarioRepository.get_collection()
+        count = await collection.count_documents({"rol_usuario": "administrador"})
+        return count
 
 
 # ============================================================================

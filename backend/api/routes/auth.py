@@ -146,6 +146,29 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return usuario
 
 
+async def obtener_usuario_admin(usuario_actual: dict = Depends(get_current_user)) -> dict:
+    """
+    Verifica que el usuario actual sea administrador.
+    Se usa como dependencia en endpoints que requieren privilegios de admin.
+    
+    Args:
+        usuario_actual: Usuario autenticado obtenido por get_current_user
+        
+    Returns:
+        Diccionario con informacion del usuario administrador
+        
+    Raises:
+        HTTPException 403: Si el usuario no es administrador
+    """
+    if usuario_actual.get("rol_usuario") != "administrador":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permisos de administrador para realizar esta accion"
+        )
+    
+    return usuario_actual
+
+
 # ============================================================================
 # ENDPOINTS
 # ============================================================================
