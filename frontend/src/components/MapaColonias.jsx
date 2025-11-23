@@ -234,11 +234,24 @@ const MapaColonias = () => {
   const geoJsonLayerRef = useRef(null);
   const [geoKey, setGeoKey] = useState(0);
   const [boundsIniciales, setBoundsIniciales] = useState(null);
-  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false); // 🆕 Estado para menú móvil
+  const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
+  const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
     cargarDatos();
+    cargarUsuario();
   }, []);
+
+  const cargarUsuario = () => {
+    try {
+      const usuarioGuardado = localStorage.getItem('usuario');
+      if (usuarioGuardado) {
+        setUsuario(JSON.parse(usuarioGuardado));
+      }
+    } catch (error) {
+      console.error('Error al cargar usuario:', error);
+    }
+  };
 
   const cargarDatos = async () => {
     try {
@@ -397,12 +410,14 @@ const MapaColonias = () => {
 
   return (
     <div className="awoda-container">
-      <ModalParametros
-        isOpen={modalAbierto}
-        onClose={() => setModalAbierto(false)}
-        colonias={coloniasOrdenadas}
-        onGuardar={guardarParametros}
-      />
+      {usuario && usuario.rol_usuario !== 'administrador' && (
+        <ModalParametros
+          isOpen={modalAbierto}
+          onClose={() => setModalAbierto(false)}
+          colonias={coloniasOrdenadas}
+          onGuardar={guardarParametros}
+        />
+      )}
 
       {/* 🆕 Botón hamburguesa (solo visible en móvil) */}
       <button 
@@ -484,9 +499,9 @@ const MapaColonias = () => {
         </div>
       </aside>
 
-      <main className="awoda-main" style={{ backgroundColor: "#fafafa", padding: "40px 0" }}>
+      <main className="awoda-main" style={{ backgroundColor: "#fafafa", padding: "0px 0" }}>
         <div className="awoda-map-header" style={{ textAlign: "center", marginBottom: "20px" }}>
-          <h2 style={{ fontWeight: "600", color: "#2c3e50" }}>Mapa de Prioridad</h2>
+          <h2 style={{ fontWeight: "700", color: "#2c3e50" }}>Mapa de Prioridad</h2>
         </div>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -590,12 +605,14 @@ const MapaColonias = () => {
             </>
           )}
 
-          <button
-            className="awoda-btn-ajustar"
-            onClick={() => setModalAbierto(true)}
-          >
-            AJUSTAR PARÁMETROS
-          </button>
+          {usuario && usuario.rol_usuario !== 'administrador' && (
+            <button
+              className="awoda-btn-ajustar"
+              onClick={() => setModalAbierto(true)}
+            >
+              AJUSTAR PARÁMETROS
+            </button>
+          )}
         </div>
       </aside>
     </div>
