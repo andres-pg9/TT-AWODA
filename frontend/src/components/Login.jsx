@@ -178,12 +178,6 @@ const Login = () => {
                             {cargando ? 'Iniciando sesión...' : 'Iniciar sesión'}
                         </button>
 
-                        {/* 🔥 CREDENCIALES DE PRUEBA - BORRAR EN PRODUCCIÓN */}
-                        <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px', fontSize: '12px' }}>
-                            <strong>Credenciales de prueba:</strong><br />
-                            <em>Administrador:</em> 215646 / admin123<br />
-                            <em>Trabajador:</em> 215647 / trabajador123
-                        </div>
                     </form>
                 </div>
             </div>
