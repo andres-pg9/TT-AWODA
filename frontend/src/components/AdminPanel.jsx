@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminPanel.css';
+import { API_URL } from '../config';
 
 const AdminPanel = () => {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ const AdminPanel = () => {
             setCargando(true);
             const token = localStorage.getItem('token');
             
-            const response = await fetch('http://127.0.0.1:8000/api/usuarios/', {
+            const response = await fetch(`${API_URL}/api/usuarios/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -73,7 +74,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             
-            const response = await fetch('http://127.0.0.1:8000/api/usuarios/', {
+            const response = await fetch(`${API_URL}/api/usuarios/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ const AdminPanel = () => {
         try {
             const token = localStorage.getItem('token');
             
-            const response = await fetch(`http://127.0.0.1:8000/api/usuarios/${numeroEmpleado}`, {
+            const response = await fetch(`${API_URL}/api/usuarios/${numeroEmpleado}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

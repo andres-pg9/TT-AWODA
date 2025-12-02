@@ -6,6 +6,7 @@ import Historial from './Historial';
 import AdminPanel from './AdminPanel';
 import Entrenamiento from './Entrenamiento';
 import './Dashboard.css';
+import { API_URL } from '../config';
 
 /**
  * DASHBOARD - Componente principal después del login
@@ -41,7 +42,7 @@ const Dashboard = () => {
             }
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/auth/validate-token', {
+                const response = await fetch(`${API_URL}/api/auth/validate-token`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -72,7 +73,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch('http://127.0.0.1:8000/api/auth/logout', {
+            await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

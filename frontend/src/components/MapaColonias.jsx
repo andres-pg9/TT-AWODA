@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import './MapaColonias.css';
 import L from 'leaflet';
 import ColoniaEdificaciones from "./ColoniaEdificaciones";
+import { API_URL } from '../config';
+
 
 const COLORES_RANKING = {
   1: '#FF0000',
@@ -263,7 +265,7 @@ const MapaColonias = () => {
       setBoundsSeleccionado(bounds);
       setBoundsIniciales(bounds);
       // GET para obtener los datos del backend
-      const responsePrioridad = await fetch('http://127.0.0.1:8000/api/optimize/');
+      const responsePrioridad = await fetch(`${API_URL}/api/optimize/`);
       const prioridadData = await responsePrioridad.json();
 
       prioridadData.colonias = prioridadData.colonias.map(c => ({

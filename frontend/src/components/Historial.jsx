@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import './Historial.css';
+import { API_URL } from '../config';
 
 /**
  * COMPONENTE HISTORIAL
@@ -37,7 +38,7 @@ const Historial = () => {
       setError(null);
 
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8000/api/optimize/historial?limit=20', {
+      const response = await fetch(`${API_URL}/api/optimize/historial?limit=20`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -66,7 +67,7 @@ const Historial = () => {
       setLoadingDetalle(true);
       
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api/optimize/${resultadoId}`, {
+      const response = await fetch(`${API_URL}/api/optimize/${resultadoId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -209,7 +210,7 @@ const Historial = () => {
         yPos = doc.lastAutoTable.finalY + 10;
         
         // Cargar detalles del resultado
-        const response = await fetch(`http://localhost:8000/api/optimize/${resultado.id}`, {
+        const response = await fetch(`${API_URL}/api/optimize/${resultado.id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

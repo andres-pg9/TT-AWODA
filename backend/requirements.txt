@@ -46,7 +46,8 @@ python-dotenv==1.2.1          # Variables de entorno desde archivo .env
 python-dateutil==2.9.0.post0  # Manejo avanzado de fechas
 pytz==2025.2                  # Zonas horarias
 tzdata==2025.2                # Datos de zonas horarias
-requests==2.32.3             # Cliente HTTP para llamadas externas
+requests==2.32.3              # Cliente HTTP para llamadas externas
+python-multipart>=0.0.9       # Manejo de formularios multipart
 
 # ----------------------------------------------------------------------------
 # DEPENDENCIAS INTERNAS (instaladas automáticamente)

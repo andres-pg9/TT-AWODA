@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import './MapaColonias.css'; // Reutilizamos los estilos existentes
+import { API_URL } from '../config';
 
 // 🔧 URL del backend (cambiar si usas otro puerto)
-const API_URL = 'http://localhost:8000';
+//const API_URL = 'http://localhost:8000';
 
 /**
  * Componente Graficas
@@ -37,7 +38,7 @@ const Graficas = () => {
      */
     const cargarColonias = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/colonias`);
+            const response = await fetch(`${API_URL}/api/colonias/`);
             if (!response.ok) throw new Error('Error al cargar colonias');
 
             const data = await response.json();

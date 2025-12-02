@@ -1,0 +1,1 @@
+export const API_URL = "https://backend-awoda-ddedeudsb7e9h2g6.eastus-01.azurewebsites.net";
