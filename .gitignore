@@ -94,6 +94,7 @@ data/
 outputs/
 results/
 datasets/
+dist/
 
 # =========================================
 # === COMPATIBILIDAD CON OS ===

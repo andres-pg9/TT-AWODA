@@ -51,8 +51,8 @@ const Historial = () => {
       }
 
       const data = await response.json();
-      console.log('Datos recibidos del historial:', data);
-      console.log('Primer resultado:', data.resultados?.[0]);
+      //console.log('Datos recibidos del historial:', data);
+      //console.log('Primer resultado:', data.resultados?.[0]);
       setHistorial(data.resultados || []);
     } catch (err) {
       setError(err.message);

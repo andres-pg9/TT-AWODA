@@ -42,7 +42,7 @@ const Dashboard = () => {
             }
 
             try {
-                const response = await fetch(`${API_URL}/api/auth/validate-token`, {
+                const response = await fetch(`${API_URL}/api/auth/validate-token/`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -57,7 +57,7 @@ const Dashboard = () => {
                 }
 
                 const data = await response.json();
-                console.log('✅ Token válido:', data);
+                console.log('✅ Token válido');
                 setCargando(false);
 
             } catch (err) {
@@ -73,7 +73,7 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
 
         try {
-            await fetch(`${API_URL}/api/auth/logout`, {
+            await fetch(`${API_URL}/api/auth/logout/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

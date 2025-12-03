@@ -65,7 +65,7 @@ const Login = () => {
                 localStorage.removeItem('rememberedEmpleado');
             }
 
-            console.log('✅ Login exitoso:', data.usuario.nombre_empleado);
+            console.log('✅ Login exitoso');
 
             // Redirigir al dashboard
             navigate('/dashboard');

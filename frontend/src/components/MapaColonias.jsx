@@ -287,7 +287,7 @@ const MapaColonias = () => {
     try {
       setCargando(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://127.0.0.1:8000/api/optimize/', {
+      const response = await fetch(`${API_URL}/api/optimize/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
