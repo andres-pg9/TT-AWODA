@@ -19,11 +19,23 @@ class ResultadoEdificacion(BaseModel):
     prioridad: float
     ranking: int
 
+class MetricasTiempo(BaseModel):
+    tiempo_total: float = Field(..., description="Tiempo total de ejecución en segundos")
+    tiempo_normalizacion: float = Field(..., description="Tiempo de normalización de datos")
+    tiempo_inicializacion: float = Field(..., description="Tiempo de inicialización del enjambre")
+    tiempo_iteraciones: float = Field(..., description="Tiempo total de iteraciones PSO")
+    tiempo_promedio_por_iteracion: float = Field(..., description="Tiempo promedio por iteración")
+    iteraciones_totales: int = Field(..., description="Número total de iteraciones ejecutadas")
+    particulas_totales: int = Field(..., description="Número total de partículas en el enjambre")
+    tiempo_guardado_bd: Optional[float] = Field(None, description="Tiempo de guardado en base de datos")
+    tiempo_procesamiento_api: Optional[float] = Field(None, description="Tiempo total de procesamiento en API")
+
 class ResultadoSalida(BaseModel):
     utilidad_total: float
     pesos_optimos: Dict[str, float]
     colonias: List[ResultadoColonia]
     edificaciones: List[ResultadoEdificacion]
+    metricas_tiempo: Optional[MetricasTiempo] = None
 
 
 # ============================================================================

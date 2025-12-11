@@ -1,7 +1,11 @@
 import numpy as np
+import time
+import logging
 from typing import List, Dict, Tuple
 from .funciones import calcular_utilidad
 from .normalizacion import normalizar_valores
+
+logger = logging.getLogger(__name__)
 
 # ============================================================================
 # CLASE PARTICLE SWARM OPTIMIZER
@@ -80,14 +84,20 @@ class ParticleSwarmOptimizer:
             - Mejor posición encontrada (pesos α,β,γ,δ)
             - Resultado de utilidad de esa posición
             - Historial de optimización por iteración
+            - Métricas de tiempo de ejecución (dict)
         """
         
-        # ✅ PASO 0: Normalizar los datos de entrada
+        tiempo_inicio = time.perf_counter()
+        metricas_tiempo = {}
+        
+        # PASO 0: Normalizar los datos de entrada
+        tiempo_normalizacion_inicio = time.perf_counter()
         consumo_norm = normalizar_valores(consumo, piso=0.3)
         reportes_norm = normalizar_valores(reportes, piso=0.3)
+        metricas_tiempo['tiempo_normalizacion'] = time.perf_counter() - tiempo_normalizacion_inicio
         
         if verbose:
-            print("\n🔧 Datos normalizados recibidos:")
+            print("\nDatos normalizados recibidos:")
             print(f"Consumo normalizado: {consumo_norm}")
             print(f"Reportes normalizados: {reportes_norm}")
             print("\nIniciando optimización PSO...")
@@ -96,6 +106,7 @@ class ParticleSwarmOptimizer:
             print("="*70)
 
         # PASO 1: Inicialización del enjambre
+        tiempo_inicializacion_inicio = time.perf_counter()
         # Usar distribución de Dirichlet para asegurar que suma = 1
         # Cada posición es un vector de 4 pesos que suman 1
         positions = np.random.dirichlet(np.ones(4), self.n_particles)
@@ -106,6 +117,7 @@ class ParticleSwarmOptimizer:
             calcular_utilidad(*pos, consumo_norm=consumo_norm, reportes_norm=reportes_norm)['utilidad_total'] 
             for pos in positions
         ])
+        metricas_tiempo['tiempo_inicializacion'] = time.perf_counter() - tiempo_inicializacion_inicio
 
         # PASO 3: Inicializar mejores posiciones
         # Mejor personal (pbest): mejor posición que ha visitado cada partícula
@@ -121,6 +133,7 @@ class ParticleSwarmOptimizer:
                                                reportes_norm=reportes_norm)
 
         # PASO 4: Bucle principal de optimización
+        tiempo_iteraciones_inicio = time.perf_counter()
         for iteration in range(self.n_iterations):
             for i in range(self.n_particles):
                 # Generar componentes aleatorios
@@ -175,8 +188,18 @@ class ParticleSwarmOptimizer:
                       f"Media={np.mean(fitness):6.2f} | "
                       f"Desv={np.std(fitness):5.2f}")
 
+        metricas_tiempo['tiempo_iteraciones'] = time.perf_counter() - tiempo_iteraciones_inicio
+        metricas_tiempo['tiempo_total'] = time.perf_counter() - tiempo_inicio
+        metricas_tiempo['tiempo_promedio_por_iteracion'] = metricas_tiempo['tiempo_iteraciones'] / self.n_iterations
+        metricas_tiempo['iteraciones_totales'] = self.n_iterations
+        metricas_tiempo['particulas_totales'] = self.n_particles
+        
         if verbose:
             print(f"\nOptimización completada en {self.n_iterations} iteraciones")
+            print(f"Tiempo total: {metricas_tiempo['tiempo_total']:.4f}s")
+            print(f"Tiempo por iteración: {metricas_tiempo['tiempo_promedio_por_iteracion']:.4f}s")
             print("="*70)
 
-        return global_best_position, global_best_result, self.history
+        logger.info(f"PSO completado en {metricas_tiempo['tiempo_total']:.4f}s")
+        
+        return global_best_position, global_best_result, self.history, metricas_tiempo

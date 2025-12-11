@@ -95,6 +95,7 @@ class ResultadoOptimizacionModel(BaseModel):
     ranking_colonias: List[Dict]
     ranking_edificaciones: List[Dict]
     version_algoritmo: str = "PSO_v1.0"
+    metricas_tiempo: Optional[Dict[str, Any]] = None
 
     model_config = ConfigDict(
         populate_by_name=True,

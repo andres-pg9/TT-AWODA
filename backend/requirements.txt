@@ -49,6 +49,12 @@ tzdata==2025.2                # Datos de zonas horarias
 requests==2.32.3             # Cliente HTTP para llamadas externas
 
 # ----------------------------------------------------------------------------
+# TESTING Y CALIDAD DE CÓDIGO
+# ----------------------------------------------------------------------------
+pytest==8.0.0                 # Framework de pruebas unitarias
+pytest-cov==4.1.0             # Plugin de cobertura de código para pytest
+
+# ----------------------------------------------------------------------------
 # DEPENDENCIAS INTERNAS (instaladas automáticamente)
 # ----------------------------------------------------------------------------
 annotated-doc==0.0.3          # Documentación de tipos anotados

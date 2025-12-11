@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.schemas import DatosEntrada, ResultadoSalida
+from models.schemas import DatosEntrada, ResultadoSalida, MetricasTiempo
 from ia.pso import ParticleSwarmOptimizer
 from ia.resultados import imprimir_resultados_detallados
 from ia.normalizacion import normalizar_valores, CONSUMO, REPORTES, COLONIAS
@@ -9,6 +9,10 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 from api.routes.auth import get_current_user
 import traceback
+import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -79,7 +83,7 @@ async def obtener_rankings():
         )
 
         # Ejecutar optimización con datos por defecto
-        pesos_optimos, resultado, _ = pso.optimize(
+        pesos_optimos, resultado, _, _ = pso.optimize(
             consumo=CONSUMO,
             reportes=REPORTES,
             verbose=False
@@ -130,28 +134,32 @@ async def ejecutar_optimizacion(
     Retorna: utilidad_total, pesos_optimos, colonias y edificaciones.
     """
     try:
+        tiempo_api_inicio = time.perf_counter()
+        
         usuario_id = current_user["_id"] if current_user else None
         
         if usuario_id:
-            print(f"Usuario autenticado: {current_user['nombre_empleado']}")
+            logger.info(f"Optimización iniciada por usuario: {current_user['nombre_empleado']}")
         else:
-            print("Usuario anónimo (sin autenticación)")
+            logger.info("Optimización iniciada por usuario anónimo")
         
-        # 1️⃣ Validar datos de entrada y decidir si usar defaults
+        # 1. Validar datos de entrada y decidir si usar defaults
+        tiempo_validacion_inicio = time.perf_counter()
         consumo_a_usar, reportes_a_usar, usando_defaults = validar_y_obtener_datos(
             datos.consumo,
             datos.reportes
         )
+        tiempo_validacion = time.perf_counter() - tiempo_validacion_inicio
         
         # Log para debug
         if usando_defaults:
-            print("Usando valores por defecto porque se detectaron datos en 0")
-            print(f"   - Consumo: {'DEFAULT' if all(v == 0 for v in datos.consumo.values()) else 'CUSTOM'}")
-            print(f"   - Reportes: {'DEFAULT' if all(v == 0 for v in datos.reportes.values()) else 'CUSTOM'}")
+            logger.info("Usando valores por defecto porque se detectaron datos en 0")
         
-        # 2️⃣ Guardar datos de entrada en MongoDB (si no son defaults)
+        # 2. Guardar datos de entrada en MongoDB (si no son defaults)
+        tiempo_guardado_entrada = 0.0
         if not usando_defaults:
-            print("Guardando datos de entrada en MongoDB...")
+            tiempo_guardado_entrada_inicio = time.perf_counter()
+            logger.info("Guardando datos de entrada en MongoDB...")
             fecha_actual = datetime.utcnow()
             
             # Guardar datos de cada colonia
@@ -164,9 +172,10 @@ async def ejecutar_optimizacion(
                 }
                 await DatosColoniaRepository.create_datos_colonia(datos_colonia)
             
-            print("   ✅ Datos de entrada guardados")
+            tiempo_guardado_entrada = time.perf_counter() - tiempo_guardado_entrada_inicio
+            logger.info(f"Datos de entrada guardados en {tiempo_guardado_entrada:.4f}s")
         
-        # 3️⃣ Crear el optimizador PSO con los parámetros base
+        # 3. Crear el optimizador PSO con los parámetros base
         pso = ParticleSwarmOptimizer(
             n_particles=30,
             n_iterations=150,
@@ -176,19 +185,21 @@ async def ejecutar_optimizacion(
             seed=42 if usando_defaults else None  # Semilla fija si usa defaults
         )
 
-        # 4️⃣ Ejecutar optimización con los datos validados
-        print("🔄 Ejecutando optimización PSO...")
-        pesos_optimos, resultado, _ = pso.optimize(
+        # 4. Ejecutar optimización con los datos validados
+        logger.info("Ejecutando optimización PSO...")
+        pesos_optimos, resultado, _, metricas_pso = pso.optimize(
             consumo=consumo_a_usar,
             reportes=reportes_a_usar,
             verbose=False
         )
+        logger.info(f"PSO completado: {metricas_pso['tiempo_total']:.4f}s")
 
-        # 5️⃣ Normalizar los valores usados para pasarlos a resultados
+        # 5. Normalizar los valores usados para pasarlos a resultados
         consumo_norm = normalizar_valores(consumo_a_usar, piso=0.3)
         reportes_norm = normalizar_valores(reportes_a_usar, piso=0.3)
 
-        # 6️⃣ Procesar resultados en formato JSON
+        # 6. Procesar resultados en formato JSON
+        tiempo_procesamiento_inicio = time.perf_counter()
         salida = imprimir_resultados_detallados(
             pesos_optimos, 
             resultado, 
@@ -196,12 +207,26 @@ async def ejecutar_optimizacion(
             consumo_norm=consumo_norm,
             reportes_norm=reportes_norm
         )
+        tiempo_procesamiento = time.perf_counter() - tiempo_procesamiento_inicio
         
-        # 7️⃣ Guardar resultado en MongoDB
-        print("Guardando resultado en MongoDB...")
+        # 7. Guardar resultado en MongoDB
+        tiempo_guardado_bd_inicio = time.perf_counter()
+        tiempo_guardado_bd_inicio = time.perf_counter()
+        logger.info("Guardando resultado en MongoDB...")
+        
+        # Construir métricas de tiempo completas
+        metricas_tiempo = {
+            **metricas_pso,
+            "tiempo_validacion": tiempo_validacion,
+            "tiempo_guardado_entrada": tiempo_guardado_entrada,
+            "tiempo_procesamiento_resultados": tiempo_procesamiento,
+            "tiempo_guardado_bd": 0.0,  # Se actualizará después
+            "tiempo_procesamiento_api": 0.0  # Se actualizará al final
+        }
+        
         resultado_data = {
             "fecha_calculo": datetime.utcnow(),
-            "usuario_id": usuario_id,  # Por ahora sin usuario (lo agregaremos en Paso 4)
+            "usuario_id": usuario_id,
             "pesos_heuristica": {
                 "alfa_legal": float(pesos_optimos[0]),
                 "beta_social": float(pesos_optimos[1]),
@@ -233,15 +258,22 @@ async def ejecutar_optimizacion(
                 }
                 for edif in salida.get("edificaciones", [])
             ],
-            "version_algoritmo": "PSO_v1.0"
+            "version_algoritmo": "PSO_v1.0",
+            "metricas_tiempo": metricas_tiempo
         }
         
         resultado_id = await ResultadoOptimizacionRepository.create_resultado(resultado_data)
+        tiempo_guardado_bd = time.perf_counter() - tiempo_guardado_bd_inicio
         
-        if usuario_id:
-            print(f"Resultado guardado con ID: {resultado_id} (asociado a usuario {current_user['nombre_empleado']})")
-        else:
-            print(f"Resultado guardado con ID: {resultado_id} (anónimo)")
+        # Actualizar métricas con tiempo de guardado
+        metricas_tiempo["tiempo_guardado_bd"] = tiempo_guardado_bd
+        metricas_tiempo["tiempo_procesamiento_api"] = time.perf_counter() - tiempo_api_inicio
+        
+        logger.info(f"Resultado guardado con ID: {resultado_id} en {tiempo_guardado_bd:.4f}s")
+        logger.info(f"Tiempo total API: {metricas_tiempo['tiempo_procesamiento_api']:.4f}s")
+        
+        # Agregar métricas a la respuesta
+        salida["metricas_tiempo"] = MetricasTiempo(**metricas_tiempo)
         
         return salida
 
@@ -290,6 +322,82 @@ async def obtener_historial(limit: int = 10):
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error al obtener historial: {str(e)}")
+
+
+@router.get("/stats/performance")
+async def obtener_estadisticas_rendimiento():
+    """
+    GET /api/optimize/stats/performance
+    
+    Calcula estadísticas agregadas de rendimiento del algoritmo PSO.
+    
+    Returns:
+        Estadísticas de tiempo de ejecución:
+        - Promedio, mínimo, máximo, desviación estándar
+        - Último resultado
+        - Total de ejecuciones analizadas
+    """
+    try:
+        # Obtener todos los resultados con métricas de tiempo
+        resultados = await ResultadoOptimizacionRepository.get_ultimos_resultados(limit=100)
+        
+        # Filtrar solo los que tienen métricas de tiempo
+        resultados_con_metricas = [
+            r for r in resultados 
+            if r.get("metricas_tiempo") is not None
+        ]
+        
+        if not resultados_con_metricas:
+            return {
+                "mensaje": "No hay suficientes datos de métricas de tiempo disponibles",
+                "total_resultados": len(resultados),
+                "resultados_con_metricas": 0
+            }
+        
+        # Extraer tiempos para análisis
+        tiempos_total = [r["metricas_tiempo"]["tiempo_total"] for r in resultados_con_metricas]
+        tiempos_iteraciones = [r["metricas_tiempo"]["tiempo_iteraciones"] for r in resultados_con_metricas]
+        tiempos_api = [r["metricas_tiempo"].get("tiempo_procesamiento_api", 0) for r in resultados_con_metricas]
+        
+        # Calcular estadísticas
+        import statistics
+        
+        estadisticas = {
+            "total_ejecuciones_analizadas": len(resultados_con_metricas),
+            "tiempo_pso": {
+                "promedio": statistics.mean(tiempos_total),
+                "mediana": statistics.median(tiempos_total),
+                "minimo": min(tiempos_total),
+                "maximo": max(tiempos_total),
+                "desviacion_estandar": statistics.stdev(tiempos_total) if len(tiempos_total) > 1 else 0
+            },
+            "tiempo_iteraciones": {
+                "promedio": statistics.mean(tiempos_iteraciones),
+                "mediana": statistics.median(tiempos_iteraciones),
+                "minimo": min(tiempos_iteraciones),
+                "maximo": max(tiempos_iteraciones),
+                "desviacion_estandar": statistics.stdev(tiempos_iteraciones) if len(tiempos_iteraciones) > 1 else 0
+            },
+            "tiempo_api_completo": {
+                "promedio": statistics.mean(tiempos_api),
+                "mediana": statistics.median(tiempos_api),
+                "minimo": min(tiempos_api),
+                "maximo": max(tiempos_api),
+                "desviacion_estandar": statistics.stdev(tiempos_api) if len(tiempos_api) > 1 else 0
+            },
+            "ultima_ejecucion": resultados_con_metricas[0]["metricas_tiempo"],
+            "referencia": {
+                "tiempo_objetivo_operacional": 5.0,
+                "cumple_objetivo": statistics.mean(tiempos_api) < 5.0,
+                "porcentaje_sobre_objetivo": (statistics.mean(tiempos_api) / 5.0) * 100
+            }
+        }
+        
+        return estadisticas
+    
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error al calcular estadísticas: {str(e)}")
 
 
 @router.get("/{resultado_id}")
