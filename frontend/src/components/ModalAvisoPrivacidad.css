@@ -1,0 +1,313 @@
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - OVERLAY
+   =================================== */
+.modal-privacidad-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - CONTENEDOR
+   =================================== */
+.modal-privacidad-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - HEADER
+   =================================== */
+.modal-privacidad-header {
+    background-color: #2196f3;
+    color: #ffffff;
+    padding: 20px 25px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-privacidad-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.modal-privacidad-btn-cerrar {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 28px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+
+.modal-privacidad-btn-cerrar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - BODY
+   =================================== */
+.modal-privacidad-body {
+    padding: 30px 25px;
+    overflow-y: auto;
+    flex: 1;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+.modal-privacidad-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-privacidad-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-privacidad-body::-webkit-scrollbar-thumb {
+    background: #2196f3;
+    border-radius: 4px;
+}
+
+.modal-privacidad-body::-webkit-scrollbar-thumb:hover {
+    background: #1976d2;
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - SECCIONES
+   =================================== */
+.modal-privacidad-seccion {
+    margin-bottom: 25px;
+}
+
+.modal-privacidad-seccion:last-of-type {
+    margin-bottom: 15px;
+}
+
+.modal-privacidad-seccion h3 {
+    color: #2196f3;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    margin-top: 0;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 8px;
+}
+
+.modal-privacidad-seccion p {
+    margin: 10px 0;
+    text-align: justify;
+    font-size: 14px;
+}
+
+.modal-privacidad-seccion ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.modal-privacidad-seccion li {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.modal-privacidad-seccion strong {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - FECHA
+   =================================== */
+.modal-privacidad-fecha {
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.modal-privacidad-fecha p {
+    margin: 0;
+    color: #1976d2;
+    font-size: 14px;
+}
+
+/* ===================================
+   MODAL AVISO DE PRIVACIDAD - FOOTER
+   =================================== */
+.modal-privacidad-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.modal-privacidad-btn-aceptar {
+    background-color: #2196f3;
+    color: #ffffff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-privacidad-btn-aceptar:hover {
+    background-color: #1976d2;
+    transform: translateY(-1px);
+}
+
+.modal-privacidad-btn-aceptar:active {
+    transform: translateY(0);
+}
+
+/* ===================================
+   RESPONSIVE - TABLETS
+   =================================== */
+@media (max-width: 768px) {
+    .modal-privacidad-overlay {
+        padding: 10px;
+    }
+
+    .modal-privacidad-container {
+        max-width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-privacidad-header {
+        padding: 15px 20px;
+    }
+
+    .modal-privacidad-header h2 {
+        font-size: 20px;
+    }
+
+    .modal-privacidad-body {
+        padding: 20px 20px;
+    }
+
+    .modal-privacidad-seccion h3 {
+        font-size: 16px;
+    }
+
+    .modal-privacidad-seccion p,
+    .modal-privacidad-seccion li {
+        font-size: 13px;
+    }
+
+    .modal-privacidad-footer {
+        padding: 15px 20px;
+    }
+
+    .modal-privacidad-btn-aceptar {
+        padding: 10px 30px;
+        font-size: 14px;
+    }
+}
+
+/* ===================================
+   RESPONSIVE - MÓVILES
+   =================================== */
+@media (max-width: 480px) {
+    .modal-privacidad-overlay {
+        padding: 5px;
+    }
+
+    .modal-privacidad-container {
+        max-width: 100%;
+        max-height: 98vh;
+        border-radius: 6px;
+    }
+
+    .modal-privacidad-header {
+        padding: 12px 15px;
+    }
+
+    .modal-privacidad-header h2 {
+        font-size: 18px;
+    }
+
+    .modal-privacidad-btn-cerrar {
+        font-size: 24px;
+        width: 28px;
+        height: 28px;
+    }
+
+    .modal-privacidad-body {
+        padding: 15px;
+    }
+
+    .modal-privacidad-seccion {
+        margin-bottom: 20px;
+    }
+
+    .modal-privacidad-seccion h3 {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .modal-privacidad-seccion p,
+    .modal-privacidad-seccion li {
+        font-size: 12px;
+    }
+
+    .modal-privacidad-seccion ul {
+        padding-left: 20px;
+    }
+
+    .modal-privacidad-fecha {
+        padding: 12px;
+    }
+
+    .modal-privacidad-footer {
+        padding: 12px 15px;
+    }
+
+    .modal-privacidad-btn-aceptar {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}

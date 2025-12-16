@@ -356,11 +356,19 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: 1;
 }
 
 .login-footer-link {
+  background: none;
+  border: none;
   color: #ffffff;
   text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  font-family: inherit;
+  transition: color 0.2s ease;
 }
 
 .login-footer-link:hover {

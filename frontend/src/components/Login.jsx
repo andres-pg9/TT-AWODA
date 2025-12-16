@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import { API_URL } from '../config';
+import ModalAvisoPrivacidad from './ModalAvisoPrivacidad';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Login = () => {
     });
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(false);
+    const [modalPrivacidadAbierto, setModalPrivacidadAbierto] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -185,11 +187,21 @@ const Login = () => {
 
             <footer className="login-footer">
                 <p>
-                    <a href="/aviso-privacidad" className="login-footer-link">
+                    <button 
+                        onClick={() => setModalPrivacidadAbierto(true)} 
+                        className="login-footer-link"
+                        type="button"
+                    >
                         Aviso de privacidad
-                    </a> | © 2025 AWODA ESCOM IPN
+                    </button> | © 2025 AWODA ESCOM IPN
                 </p>
             </footer>
+
+            {/* Modal de Aviso de Privacidad */}
+            <ModalAvisoPrivacidad 
+                isOpen={modalPrivacidadAbierto}
+                onClose={() => setModalPrivacidadAbierto(false)}
+            />
 
         </div>
     );

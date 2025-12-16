@@ -277,7 +277,7 @@ const Entrenamiento = () => {
 
     return (
         <div className="entrenamiento-container">
-            <div className="awoda-map-header" style={{ textAlign: "center", marginBottom: "20px", background: "white" }}>
+            <div className="awoda-map-header" style={{ textAlign: "center", background: "white" }}>
           <h2 style={{ fontSize: "2rem", fontWeight: "700", color: "#2c3e50" }}>Entrenamiento</h2>
             </div>
 

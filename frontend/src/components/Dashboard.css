@@ -8,6 +8,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  padding-bottom: 48px; /* Espacio para el footer fijo */
 }
 
 /* ========================================
@@ -98,19 +99,58 @@
 }
 
 /* ========================================
-   FOOTER
+   FOOTER FIJO
    ======================================== */
-.awoda-footer {
-  background-color: #1a2332;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-  padding: 15px;
-  font-size: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: none; /* Oculto por defecto para maximizar espacio del mapa */
+.dashboard-footer {
+  background-color: #283546;
+  color: white;
+  padding: 12px 30px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.awoda-footer p {
+.dashboard-footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.dashboard-footer-help-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+  text-decoration: none;
+}
+
+.dashboard-footer-help-btn:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4);
+}
+
+.dashboard-footer-help-btn svg {
+  flex-shrink: 0;
+}
+
+.dashboard-footer-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
   margin: 0;
 }
 
@@ -118,6 +158,10 @@
    RESPONSIVE
    ======================================== */
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding-bottom: 56px; /* Más espacio en móvil */
+  }
+
   .awoda-navbar {
     padding: 0 15px;
     height: 50px;
@@ -138,6 +182,38 @@
   .awoda-navbar-logout {
     padding: 6px 16px;
     font-size: 12px;
+  }
+
+  .dashboard-footer {
+    padding: 10px 15px;
+  }
+
+  .dashboard-footer-content {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .dashboard-footer-help-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+
+  .dashboard-footer-text {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-footer-help-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+
+  .dashboard-footer-text {
+    font-size: 10px;
   }
 }
 
